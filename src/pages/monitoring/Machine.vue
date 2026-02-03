@@ -119,13 +119,15 @@
 							<VaIcon name="drag_indicator" />
 						</div>
 						<span class="block-title">{{ element.label }}</span>
-						<div class="col-span-selector">
+						<div class="col-span-selector" role="group" :aria-label="t('machine.columnWidth')">
 							<button
 								v-for="col in 4"
 								:key="col"
 								class="col-btn"
 								:class="{ active: element.colSpan === col }"
 								:title="`${col} ${t('machine.columns')}`"
+								:aria-label="`${t('machine.setColumnWidth')} ${col}`"
+								:aria-pressed="element.colSpan === col"
 								@click="setBlockColSpan(element.id, col as ColSpan)"
 							>
 								{{ col }}
@@ -513,12 +515,12 @@ const getWorkTimeStatusName = (status: WorkTimeStatus): string => {
 .page-title {
 	font-size: 1.5rem;
 	font-weight: 600;
-	color: #333;
+	color: $text-primary;
 }
 
 .update-time {
 	font-size: 0.875rem;
-	color: #6c757d;
+	color: $text-secondary;
 }
 
 // 編輯模式提示
@@ -631,7 +633,7 @@ const getWorkTimeStatusName = (status: WorkTimeStatus): string => {
 
 .drag-handle {
 	cursor: grab;
-	color: #9e9e9e;
+	color: $text-muted;
 	padding: 0.25rem;
 	display: flex;
 	align-items: center;
@@ -645,14 +647,14 @@ const getWorkTimeStatusName = (status: WorkTimeStatus): string => {
 	flex: 1;
 	font-size: 0.875rem;
 	font-weight: 500;
-	color: #666;
+	color: $text-secondary;
 }
 
 // 欄寬選擇器
 .col-span-selector {
 	display: flex;
 	gap: 2px;
-	background: #e0e0e0;
+	background: $tsc-grey;
 	border-radius: 4px;
 	padding: 2px;
 }
@@ -665,12 +667,17 @@ const getWorkTimeStatusName = (status: WorkTimeStatus): string => {
 	border-radius: 3px;
 	font-size: 0.75rem;
 	font-weight: 600;
-	color: #666;
+	color: $text-secondary;
 	cursor: pointer;
 	transition: all 0.15s;
 
 	&:hover {
-		background: #fff;
+		background: $tsc-white;
+	}
+
+	&:focus-visible {
+		outline: 2px solid $tsc-blue;
+		outline-offset: 1px;
 	}
 
 	&.active {
@@ -691,14 +698,14 @@ const getWorkTimeStatusName = (status: WorkTimeStatus): string => {
 .hidden-blocks {
 	margin-top: 1.5rem;
 	padding: 1rem;
-	background: #fafafa;
+	background: $tsc-grey-light;
 	border-radius: 8px;
 }
 
 .hidden-blocks-title {
 	font-size: 0.875rem;
 	font-weight: 600;
-	color: #666;
+	color: $text-secondary;
 	margin-bottom: 0.75rem;
 }
 
@@ -716,7 +723,7 @@ const getWorkTimeStatusName = (status: WorkTimeStatus): string => {
 .section-title {
 	font-size: 1.125rem;
 	font-weight: 600;
-	color: #333;
+	color: $text-primary;
 	margin-bottom: 1rem;
 }
 
@@ -758,14 +765,14 @@ const getWorkTimeStatusName = (status: WorkTimeStatus): string => {
 
 	.info-label {
 		font-size: 0.875rem;
-		color: #666;
+		color: $text-secondary;
 		min-width: 60px;
 	}
 
 	.info-value {
 		font-size: 1rem;
 		font-weight: 600;
-		color: #333;
+		color: $text-primary;
 	}
 }
 
@@ -780,12 +787,12 @@ const getWorkTimeStatusName = (status: WorkTimeStatus): string => {
 	border-radius: 4px;
 	font-size: 0.75rem;
 	font-weight: 500;
-	background: #e0e0e0;
-	color: #666;
+	background: $tsc-grey;
+	color: $text-secondary;
 	transition: all 0.2s;
 
 	&.active {
-		color: #fff;
+		color: $tsc-white;
 	}
 }
 
@@ -798,7 +805,7 @@ const getWorkTimeStatusName = (status: WorkTimeStatus): string => {
 .worktime-progress-bar {
 	position: relative;
 	height: 40px;
-	background: #f0f0f0;
+	background: $tsc-grey-light;
 	border-radius: 4px;
 	overflow: hidden;
 }
@@ -820,7 +827,7 @@ const getWorkTimeStatusName = (status: WorkTimeStatus): string => {
 	position: absolute;
 	transform: translateX(-50%) rotate(-45deg);
 	font-size: 0.625rem;
-	color: #666;
+	color: $text-secondary;
 	white-space: nowrap;
 	transform-origin: top center;
 
@@ -842,7 +849,7 @@ const getWorkTimeStatusName = (status: WorkTimeStatus): string => {
 	align-items: center;
 	gap: 0.5rem;
 	font-size: 0.75rem;
-	color: #666;
+	color: $text-secondary;
 }
 
 .legend-color {
@@ -857,7 +864,7 @@ const getWorkTimeStatusName = (status: WorkTimeStatus): string => {
 	justify-content: center;
 	align-items: center;
 	padding: 1.5rem 1rem;
-	background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+	background: linear-gradient(135deg, $tsc-grey-light 0%, $tsc-grey 100%);
 	border-radius: 8px;
 	overflow: visible;
 
@@ -871,7 +878,7 @@ const getWorkTimeStatusName = (status: WorkTimeStatus): string => {
 	font-size: 4rem;
 	font-weight: bold;
 	letter-spacing: 0.2rem;
-	color: #333;
+	color: $text-primary;
 	line-height: 1.2;
 
 	&.small {
@@ -892,7 +899,7 @@ const getWorkTimeStatusName = (status: WorkTimeStatus): string => {
 }
 
 .temperature-item {
-	background: #f8f9fa;
+	background: $bg-secondary;
 	border-radius: 8px;
 	padding: 1rem;
 }
@@ -900,7 +907,7 @@ const getWorkTimeStatusName = (status: WorkTimeStatus): string => {
 .temp-label {
 	font-size: 0.875rem;
 	font-weight: 600;
-	color: #333;
+	color: $text-primary;
 	margin-bottom: 0.5rem;
 }
 
@@ -924,12 +931,12 @@ const getWorkTimeStatusName = (status: WorkTimeStatus): string => {
 
 .temp-unit {
 	font-size: 1rem;
-	color: #666;
+	color: $text-secondary;
 }
 
 .temp-set {
 	font-size: 0.75rem;
-	color: #666;
+	color: $text-muted;
 }
 
 // 輾牙機速率顯示
@@ -944,14 +951,14 @@ const getWorkTimeStatusName = (status: WorkTimeStatus): string => {
 	display: flex;
 	align-items: baseline;
 	gap: 0.5rem;
-	background: #f8f9fa;
+	background: $bg-secondary;
 	padding: 1rem 1.5rem;
 	border-radius: 8px;
 }
 
 .rate-label {
 	font-size: 0.875rem;
-	color: #666;
+	color: $text-secondary;
 }
 
 .rate-value {
@@ -962,7 +969,7 @@ const getWorkTimeStatusName = (status: WorkTimeStatus): string => {
 
 .rate-unit {
 	font-size: 0.875rem;
-	color: #666;
+	color: $text-secondary;
 }
 
 // 感測器燈號
@@ -1034,7 +1041,7 @@ const getWorkTimeStatusName = (status: WorkTimeStatus): string => {
 
 .light-label {
 	font-size: 0.75rem;
-	color: #666;
+	color: $text-secondary;
 	text-align: center;
 }
 
@@ -1047,5 +1054,181 @@ const getWorkTimeStatusName = (status: WorkTimeStatus): string => {
 .loading-state,
 .error-state {
 	min-height: 300px;
+}
+</style>
+
+<style lang="scss">
+// ===== 暗色模式 (使用全域樣式) =====
+// 全深色設計：頁面背景深色，卡片深色，文字淺色
+body.dark-mode .machine-detail,
+body.va-dark .machine-detail,
+.va-dark .machine-detail {
+	// 頁面標題
+	.page-title {
+		color: #f8fafc !important;
+	}
+
+	// 更新時間
+	.update-time {
+		color: #94a3b8 !important;
+	}
+
+	// 編輯模式提示
+	.edit-mode-hint {
+		background: rgba(56, 189, 248, 0.15) !important;
+		color: #38bdf8 !important;
+	}
+
+	// 區塊標題
+	.section-title {
+		color: #f8fafc !important;
+	}
+
+	// 編輯工具列
+	.block-toolbar {
+		background: linear-gradient(135deg, #1e3a5f 0%, #0c4a6e 100%) !important;
+		border-bottom-color: rgba(56, 189, 248, 0.3) !important;
+	}
+
+	.block-title {
+		color: #94a3b8 !important;
+	}
+
+	.drag-handle {
+		color: #64748b !important;
+	}
+
+	.col-span-selector {
+		background: #334155 !important;
+	}
+
+	.col-btn {
+		color: #94a3b8 !important;
+
+		&:hover {
+			background: #475569 !important;
+		}
+
+		&.active {
+			background: #0ea5e9 !important;
+			color: #ffffff !important;
+		}
+	}
+
+	// 隱藏區塊
+	.hidden-blocks {
+		background: #0f172a !important;
+	}
+
+	.hidden-blocks-title {
+		color: #94a3b8 !important;
+	}
+
+	// 機台資訊
+	.machine-image {
+		background: linear-gradient(135deg, #1e3a5f 0%, #0c4a6e 100%) !important;
+		border-color: rgba(56, 189, 248, 0.3) !important;
+	}
+
+	.info-label {
+		color: #94a3b8 !important;
+	}
+
+	.info-value {
+		color: #f8fafc !important;
+	}
+
+	.status-badge {
+		background: #334155 !important;
+		color: #94a3b8 !important;
+
+		&.active {
+			color: #ffffff !important;
+		}
+	}
+
+	// 工時進度條
+	.worktime-progress-bar {
+		background: #334155 !important;
+	}
+
+	.time-label {
+		color: #94a3b8 !important;
+	}
+
+	.legend-item {
+		color: #94a3b8 !important;
+	}
+
+	// 支數顯示
+	.count-display {
+		background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%) !important;
+	}
+
+	.count-number {
+		color: #f8fafc !important;
+	}
+
+	// 熱處理溫度
+	.temperature-item {
+		background: #0f172a !important;
+	}
+
+	.temp-label {
+		color: #f8fafc !important;
+	}
+
+	.temp-value {
+		color: #38bdf8 !important;
+	}
+
+	.temp-unit {
+		color: #94a3b8 !important;
+	}
+
+	.temp-set {
+		color: #64748b !important;
+	}
+
+	// 輾牙機速率
+	.rate-item {
+		background: #0f172a !important;
+	}
+
+	.rate-label {
+		color: #94a3b8 !important;
+	}
+
+	.rate-value {
+		color: #38bdf8 !important;
+	}
+
+	.rate-unit {
+		color: #94a3b8 !important;
+	}
+
+	// 感測器燈號
+	.light-label {
+		color: #94a3b8 !important;
+	}
+
+	.is-alarm .light-label {
+		color: #f87171 !important;
+	}
+
+	.light-indicator {
+		&.light-off {
+			background: linear-gradient(135deg, #475569 0%, #334155 100%) !important;
+		}
+	}
+
+	// Loading 文字
+	.text-gray-500 {
+		color: #94a3b8 !important;
+	}
+
+	.text-gray-600 {
+		color: #94a3b8 !important;
+	}
 }
 </style>

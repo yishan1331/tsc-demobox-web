@@ -1,57 +1,59 @@
 <template>
 	<VaCollapse :value="isExpanded" @toggle="toggle">
 		<template #header="{ value: isCollapsed }">
-			<VaSidebarItem
-				:to="navigationRoute.children ? undefined : { name: navigationRoute.name }"
-				:active="routeHasActiveChild(nowRoute, navigationRoute)"
-				:active-color="activeColor"
-				:text-color="textColor(navigationRoute)"
-				:aria-label="`${navigationRoute.children ? 'Open category ' : 'Visit'} ${t(navigationRoute.displayName)}`"
-				role="button"
-				hover-opacity="0.10"
+			<div
+				class="sidebar-item"
+				:class="{
+					'sidebar-item--active': isActive,
+					'sidebar-item--has-children': navigationRoute.children,
+				}"
+				@click="handleClick"
 			>
-				<VaSidebarItemContent class="py-3 pr-2 pl-4 item-content">
+				<!-- 圖標 -->
+				<div class="sidebar-item__icon">
 					<VaIcon
 						v-if="'meta' in navigationRoute && navigationRoute.meta.icon"
-						aria-hidden="true"
+						:name="navigationRoute.meta.icon"
 						size="20px"
-						:color="iconColor(navigationRoute)"
-						:component="VaIconComponent"
-						:icon="navigationRoute.meta.icon"
+						:color="isActive ? 'tscSkyBlue' : 'textMuted'"
 					/>
-					<VaSidebarItemTitle
-						class="flex justify-between items-center leading-5 font-semibold"
-					>
-						{{ t(navigationRoute.displayName) }}
-						<VaIcon
-							v-if="navigationRoute.children"
-							:name="arrowDirection(isCollapsed)"
-							size="20px"
-						/>
-					</VaSidebarItemTitle>
-				</VaSidebarItemContent>
-			</VaSidebarItem>
-		</template>
-		<template #body>
-			<VaAccordion v-if="navigationRoute.children" v-model="itemsRoutingMenuStatus" multiple>
-				<AppSidebarItems
-					v-for="(childRoute, index) in navigationRoute.children"
-					:key="index"
-					:navigationRoute="childRoute"
-					class="pl-11 is-children"
+				</div>
+
+				<!-- 標題 -->
+				<span class="sidebar-item__title">
+					{{ t(navigationRoute.displayName) }}
+				</span>
+
+				<!-- 展開箭頭 -->
+				<VaIcon
+					v-if="navigationRoute.children"
+					:name="isCollapsed ? 'keyboard_arrow_down' : 'keyboard_arrow_up'"
+					size="18px"
+					class="sidebar-item__arrow"
+					color="textMuted"
 				/>
-			</VaAccordion>
+			</div>
+		</template>
+
+		<template #body>
+			<div v-if="navigationRoute.children" class="sidebar-item__children">
+				<VaAccordion v-model="itemsRoutingMenuStatus" multiple>
+					<AppSidebarItems
+						v-for="(childRoute, index) in navigationRoute.children"
+						:key="index"
+						:navigationRoute="childRoute"
+						class="sidebar-item--child"
+					/>
+				</VaAccordion>
+			</div>
 		</template>
 	</VaCollapse>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref, computed, watch } from 'vue'
-import { useColors } from 'vuestic-ui'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-
-import VaIconComponent from '@/components/icons/VaIconComponent.vue'
 
 import { routeHasActiveChild, type INavigationRoute } from './NavigationRoutes'
 
@@ -64,26 +66,28 @@ export default defineComponent({
 	emits: ['update:visible'],
 	setup(props) {
 		const { t } = useI18n()
-
-		const { getColor, colorToRgba } = useColors()
+		const router = useRouter()
 
 		const isExpanded = ref(false)
 		const nowRoute = useRoute()
 
 		const itemsRoutingMenuStatus = ref<boolean[]>([])
 
+		const isActive = computed(() => routeHasActiveChild(nowRoute, props.navigationRoute))
+
 		const toggle = () => {
-			isExpanded.value = !isExpanded.value
+			if (props.navigationRoute.children) {
+				isExpanded.value = !isExpanded.value
+			}
 		}
 
-		const arrowDirection = (state: boolean) => (state ? 'va-arrow-up' : 'va-arrow-down')
-		const iconColor = (route: any) =>
-			routeHasActiveChild(nowRoute, route) ? 'primary' : 'secondary'
-
-		const textColor = (route: any) =>
-			routeHasActiveChild(nowRoute, route) ? 'tscBlack' : 'textPrimary'
-
-		const activeColor = computed(() => colorToRgba(getColor('tsc'), 0.1))
+		const handleClick = () => {
+			if (!props.navigationRoute.children && props.navigationRoute.name) {
+				router.push({ name: props.navigationRoute.name })
+			} else {
+				toggle()
+			}
+		}
 
 		const setActiveExpand = () => {
 			if ('children' in props.navigationRoute && props.navigationRoute.children) {
@@ -94,24 +98,157 @@ export default defineComponent({
 		}
 
 		watch(() => nowRoute.fullPath, setActiveExpand, { immediate: true })
-		// watch(() => itemsRoutingMenuStatus.value, sidebarAction, {
-		// 	immediate: true,
-		// 	deep: true,
-		// })
 
 		return {
 			t,
 			itemsRoutingMenuStatus,
 			isExpanded,
+			isActive,
 			toggle,
-			arrowDirection,
+			handleClick,
 			nowRoute,
 			routeHasActiveChild,
-			activeColor,
-			iconColor,
-			textColor,
-			VaIconComponent,
 		}
 	},
 })
 </script>
+
+<style lang="scss" scoped>
+// === Sidebar Items - Light Mode 預設樣式 ===
+.sidebar-item {
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+	padding: 0.75rem 1rem;
+	margin: 0.125rem 0.5rem;
+	border-radius: 8px;
+	cursor: pointer;
+	transition: all 0.15s ease;
+	color: #475569;
+
+	&:hover {
+		background: #f1f5f9;
+		color: #0f172a;
+	}
+
+	// === 活躍狀態 ===
+	&--active {
+		background: rgba(14, 165, 233, 0.1);
+		color: #0ea5e9;
+
+		.sidebar-item__icon {
+			color: #0ea5e9;
+		}
+
+		&:hover {
+			background: rgba(14, 165, 233, 0.15);
+		}
+	}
+
+	// === 圖標 ===
+	&__icon {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 24px;
+		height: 24px;
+		flex-shrink: 0;
+	}
+
+	// === 標題 ===
+	&__title {
+		flex: 1;
+		font-size: 0.875rem;
+		font-weight: 500;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	// === 箭頭 ===
+	&__arrow {
+		flex-shrink: 0;
+		transition: transform 0.2s ease;
+	}
+
+	// === 子項目容器 ===
+	&__children {
+		margin-left: 0.5rem;
+		padding-left: 1rem;
+		border-left: 1px solid #e2e8f0;
+	}
+
+	// === 子項目樣式 ===
+	&--child {
+		.sidebar-item {
+			padding: 0.625rem 1rem;
+			margin: 0.125rem 0.25rem;
+
+			&__icon {
+				width: 20px;
+				height: 20px;
+			}
+
+			&__title {
+				font-size: 0.8125rem;
+			}
+		}
+	}
+}
+
+// === 覆蓋 Vuestic Collapse 預設樣式 ===
+:deep(.va-collapse) {
+	background: transparent !important;
+}
+
+:deep(.va-collapse__header) {
+	padding: 0 !important;
+	background: transparent !important;
+}
+
+:deep(.va-collapse__body) {
+	padding: 0 !important;
+	background: transparent !important;
+}
+
+:deep(.va-collapse__body-wrapper) {
+	background: transparent !important;
+}
+
+// === 覆蓋 Vuestic Accordion 預設樣式 ===
+:deep(.va-accordion) {
+	background: transparent !important;
+}
+</style>
+
+<style lang="scss">
+// === Sidebar Items - Dark Mode 樣式 (非 scoped) ===
+body.dark-mode,
+body.va-dark {
+	.sidebar-item {
+		color: #94a3b8 !important;
+
+		&:hover {
+			background: rgba(255, 255, 255, 0.05) !important;
+			color: #f8fafc !important;
+		}
+
+		&--active {
+			background: rgba(56, 189, 248, 0.15) !important;
+			color: #38bdf8 !important;
+
+			.sidebar-item__icon {
+				color: #38bdf8 !important;
+			}
+
+			&:hover {
+				background: rgba(56, 189, 248, 0.2) !important;
+			}
+		}
+
+		&__children {
+			border-left-color: rgba(255, 255, 255, 0.08) !important;
+		}
+	}
+}
+</style>

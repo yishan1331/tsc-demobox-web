@@ -6,17 +6,30 @@
 @tailwind components;
 @tailwind utilities;
 
+// ============================================================================
+// 🎨 科技簡約風格 - 全域基礎樣式
+// ============================================================================
 body {
 	@apply text-regularMedium;
 
 	font-size: 1rem;
+	color: $text-primary;
+	background-color: $bg-secondary;
 
-	// TODO Move to some other place so that it's more elegant.
+	// Vuestic 變數覆蓋 - 科技簡約風格
 	--va-checkbox-font-size: 0.875rem;
-	--va-card-box-shadow: none; // TODO Remove after https://github.com/epicmaxco/vuestic-ui/issues/3964
-	--va-card-padding: 1rem;
-	--va-font-family: 'Inter', sans-serif;
+	--va-card-box-shadow: #{$shadow-sm};
+	--va-card-padding: 1.25rem;
+	--va-card-border-radius: #{$radius-lg};
+	--va-font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 	--va-card-background-color: var(--va-background-primary);
+
+	// 科技簡約風格變數
+	--tech-border-color: #{$border-color};
+	--tech-hover-bg: #{$bg-hover};
+	--tech-active-bg: #{$bg-active};
+	--tech-radius: #{$radius-md};
+	--tech-transition: #{$transition-fast};
 }
 
 code,
@@ -333,4 +346,300 @@ pre {
 
 .va-input-label {
 	font-size: 1rem;
+}
+
+// ============================================================================
+// 🎨 科技簡約風格 - 卡片樣式
+// ============================================================================
+.tech-card {
+	background: $bg-primary;
+	border: 1px solid $border-color;
+	border-radius: $radius-lg;
+	padding: 1.25rem;
+	transition: $transition-fast;
+
+	&:hover {
+		border-color: $tsc-blue;
+	}
+
+	&__header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		margin-bottom: 1rem;
+		padding-bottom: 0.75rem;
+		border-bottom: 1px solid $border-color;
+	}
+
+	&__title {
+		font-size: 1rem;
+		font-weight: 600;
+		color: $text-primary;
+	}
+
+	&__content {
+		color: $text-secondary;
+	}
+}
+
+// ============================================================================
+// 🎨 科技簡約風格 - 狀態指示器
+// ============================================================================
+.status-indicator {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.25rem 0.75rem;
+	border-radius: $radius-full;
+	font-size: 0.75rem;
+	font-weight: 500;
+
+	&::before {
+		content: '';
+		width: 8px;
+		height: 8px;
+		border-radius: 50%;
+	}
+
+	&--running {
+		background: rgba($machine-running, 0.1);
+		color: $machine-running;
+
+		&::before {
+			background: $machine-running;
+		}
+	}
+
+	&--idle {
+		background: rgba($machine-idle, 0.1);
+		color: $machine-idle;
+
+		&::before {
+			background: $machine-idle;
+		}
+	}
+
+	&--warning {
+		background: rgba($machine-warning, 0.1);
+		color: $machine-warning;
+
+		&::before {
+			background: $machine-warning;
+		}
+	}
+
+	&--error {
+		background: rgba($machine-error, 0.1);
+		color: $machine-error;
+
+		&::before {
+			background: $machine-error;
+		}
+	}
+}
+
+// ============================================================================
+// 🎨 科技簡約風格 - 按鈕樣式覆蓋
+// ============================================================================
+.va-button {
+	border-radius: $radius-md !important;
+	font-weight: 500 !important;
+	transition: $transition-fast !important;
+
+	&--primary {
+		background: $tsc-blue !important;
+
+		&:hover {
+			background: $tsc-blue-dark !important;
+		}
+	}
+}
+
+// ============================================================================
+// 🎨 科技簡約風格 - 輸入框樣式覆蓋
+// ============================================================================
+.va-input-wrapper {
+	--va-input-wrapper-border-color: #{$border-color};
+	--va-input-wrapper-border-radius: #{$radius-md};
+
+	&:focus-within {
+		--va-input-wrapper-border-color: #{$tsc-blue};
+	}
+}
+
+// ============================================================================
+// 🎨 Light Mode 全域樣式
+// ============================================================================
+body {
+	// === Light Mode CSS 變數 ===
+	--va-sidebar-bg: #ffffff;
+	--va-sidebar-border: #e2e8f0;
+	--va-sidebar-text: #475569;
+	--va-sidebar-text-active: #0ea5e9;
+	--va-sidebar-item-hover: #f1f5f9;
+	--va-sidebar-item-active: rgba(14, 165, 233, 0.1);
+
+	--va-navbar-bg: #ffffff;
+	--va-navbar-border: #e2e8f0;
+	--va-navbar-text: #0f172a;
+	--va-navbar-text-secondary: #475569;
+}
+
+// ============================================================================
+// 🎨 無障礙設計 - 減少動畫偏好支援
+// ============================================================================
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+		scroll-behavior: auto !important;
+	}
+}
+
+// ============================================================================
+// 🎨 暗色模式全域調整
+// ============================================================================
+body.dark-mode,
+body.va-dark,
+.va-dark {
+	// === 基礎背景色 ===
+	background-color: #0f172a !important;
+	color: #f8fafc;
+
+	--tech-border-color: #334155;
+	--tech-hover-bg: #334155;
+	--tech-active-bg: #0c4a6e;
+
+	// === Vuestic 變數覆蓋 ===
+	--va-background-primary: #0f172a;
+	--va-background-secondary: #1e293b;
+	--va-background-element: #334155;
+	--va-text-primary: #f8fafc;
+	--va-text-secondary: #cbd5e1;
+	--va-text-muted: #94a3b8;
+
+	// === Dark Mode Sidebar CSS 變數 ===
+	--va-sidebar-bg: #0f172a;
+	--va-sidebar-border: rgba(255, 255, 255, 0.08);
+	--va-sidebar-text: #94a3b8;
+	--va-sidebar-text-active: #38bdf8;
+	--va-sidebar-item-hover: rgba(255, 255, 255, 0.05);
+	--va-sidebar-item-active: rgba(56, 189, 248, 0.15);
+
+	// === Dark Mode Navbar CSS 變數 ===
+	--va-navbar-bg: #1e293b;
+	--va-navbar-border: #334155;
+	--va-navbar-text: #f8fafc;
+	--va-navbar-text-secondary: #94a3b8;
+
+	// === VaCard 暗色模式 - 深色背景 ===
+	.va-card {
+		background: #1e293b !important;
+		border-color: #334155 !important;
+		box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
+	}
+
+	// === VaBreadcrumbs 暗色模式 ===
+	.va-breadcrumbs {
+		.va-breadcrumbs-item {
+			color: #94a3b8;
+
+			&:hover {
+				color: #f8fafc;
+			}
+
+			&--active {
+				color: #f8fafc;
+			}
+		}
+
+		.va-breadcrumbs__separator {
+			color: #64748b;
+		}
+	}
+
+	// === 科技風卡片 ===
+	.tech-card {
+		background: #1e293b;
+		border-color: #334155;
+
+		&:hover {
+			border-color: #38bdf8;
+		}
+
+		&__title {
+			color: #f8fafc;
+		}
+
+		&__content {
+			color: #94a3b8;
+		}
+	}
+
+	// === 表格暗色模式 ===
+	.tsc-data-table {
+		background: #1e293b !important;
+		border-color: #334155 !important;
+
+		.va-data-table__table-thead .va-data-table__table-th {
+			background: #334155 !important;
+			color: #f8fafc !important;
+			border-bottom-color: #475569 !important;
+		}
+
+		.va-data-table__table-tbody .va-data-table__table-tr {
+			background: #1e293b !important;
+			border-color: #334155 !important;
+
+			&:hover {
+				background: #334155 !important;
+			}
+
+			.va-data-table__table-td {
+				color: #e2e8f0;
+			}
+		}
+	}
+
+	// === 輸入框暗色模式 ===
+	.va-input-wrapper {
+		--va-input-wrapper-background: #1e293b;
+		--va-input-wrapper-border-color: #334155;
+
+		input,
+		textarea {
+			color: #f8fafc;
+
+			&::placeholder {
+				color: #64748b;
+			}
+		}
+	}
+
+	// === 按鈕暗色模式微調 ===
+	.va-button {
+		&--secondary,
+		&--plain {
+			color: #94a3b8;
+
+			&:hover {
+				color: #f8fafc;
+				background: #334155;
+			}
+		}
+	}
+
+	// === 分隔線暗色模式 ===
+	.va-divider {
+		background: #334155 !important;
+	}
+
+	// === 通用文字顏色修正 ===
+	.text-gray-500,
+	.text-gray-600 {
+		color: #94a3b8 !important;
+	}
 }

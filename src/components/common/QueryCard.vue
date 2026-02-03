@@ -95,6 +95,11 @@ defineExpose({
 		background: linear-gradient(135deg, #f0f7fa 0%, #e8f4f8 100%);
 	}
 
+	&:focus-visible {
+		outline: 2px solid $tsc-blue;
+		outline-offset: -2px;
+	}
+
 	.header-title {
 		display: flex;
 		align-items: center;
@@ -167,6 +172,44 @@ defineExpose({
 
 		:deep(.va-button) {
 			width: 100%;
+		}
+	}
+}
+</style>
+
+<style lang="scss">
+// ===== 暗色模式 =====
+body.dark-mode .query-card,
+body.va-dark .query-card,
+.va-dark .query-card {
+	.collapsible-header {
+		background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+		border-bottom-color: #475569;
+
+		&:hover {
+			background: linear-gradient(135deg, #334155 0%, #475569 100%);
+		}
+
+		.header-title {
+			color: #f8fafc;
+		}
+
+		.header-icon {
+			color: #38bdf8;
+		}
+
+		.collapse-icon {
+			color: #94a3b8;
+		}
+	}
+
+	.static-header {
+		background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+		border-bottom-color: #475569;
+		color: #f8fafc;
+
+		.header-icon {
+			color: #38bdf8;
 		}
 	}
 }

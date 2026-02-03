@@ -7,13 +7,15 @@
 			order: 1,
 			overlay: breakpoints.mdDown && !isSidebarMinimized,
 		}"
-		class="bg-white"
+		class="app-layout"
 		@leftOverlayClick="GlobalStore.toggleSidebar('app-layout1')"
 	>
+		<!-- 頂部導航欄 -->
 		<template #top>
 			<AppNavbar :is-mobile="isMobile" :is-tablet="isTablet" />
 		</template>
 
+		<!-- 左側側邊欄 -->
 		<template #left>
 			<AppSidebar
 				:minimized="isSidebarMinimized"
@@ -24,27 +26,27 @@
 			/>
 		</template>
 
+		<!-- 主內容區 -->
 		<template #content>
 			<div
 				:class="{ minimized: isSidebarMinimized }"
-				class="app-layout__sidebar-wrapper bg-white"
+				class="app-layout__sidebar-wrapper"
 			>
-				<div v-if="isFullScreenSidebar" class="flex justify-end">
-					<VaButton
-						class="px-4 py-4"
-						icon="md_close"
-						preset="plain"
-						@click="onCloseSidebarButtonClick"
-					/>
+				<div v-if="isFullScreenSidebar" class="app-layout__close-btn">
+					<VaButton preset="plain" icon="close" @click="onCloseSidebarButtonClick" />
 				</div>
 			</div>
-			<main class="pt-0" style="height: calc(100vh - 4rem)">
+
+			<main class="app-layout__main">
+				<!-- 麵包屑導航 -->
 				<AppLayoutNavigation
-					v-if="!isMobile && router.currentRoute.value.path != '/home'"
-					class="p-4"
+					v-if="!isMobile && router.currentRoute.value.path !== '/home'"
+					class="app-layout__breadcrumb"
 				/>
-				<article>
-					<RouterView class="p-4" :is-mobile="isMobile" style="margin: 0 auto" />
+
+				<!-- 頁面內容 -->
+				<article class="app-layout__content">
+					<RouterView :is-mobile="isMobile" />
 				</article>
 			</main>
 		</template>
@@ -53,7 +55,7 @@
 
 <script setup>
 import { useRouter } from 'vue-router'
-import { onMounted, ref, computed } from 'vue'
+import { onMounted, onUnmounted, ref, computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { onBeforeRouteUpdate } from 'vue-router'
 import { useBreakpoint } from 'vuestic-ui'
@@ -83,10 +85,8 @@ const { isSidebarMinimized } = storeToRefs(GlobalStore)
 
 const { userData } = storeToRefs(AuthStore)
 
-const handleRealResize = (w, h) => {
-	console.log('Real resize!', w, h)
+const handleRealResize = () => {
 	GlobalStore.toggleSidebar(breakpoints.mdDown)
-	// isSidebarMinimized.value = breakpoints.mdDown
 	isMobile.value = breakpoints.smDown
 	isTablet.value = breakpoints.mdDown
 	sidebarMinimizedWidth.value = isMobile.value ? '0' : '4.5rem'
@@ -96,6 +96,7 @@ const handleRealResize = (w, h) => {
 	}
 	GlobalStore.setDataTableHeight(breakpoints.height / 2)
 }
+
 useKeyboardAwareResize(
 	{
 		onRealResize: handleRealResize,
@@ -114,7 +115,6 @@ onMounted(() => {
 
 onBeforeRouteUpdate(() => {
 	if (breakpoints.mdDown) {
-		// Collapse sidebar after route change for Mobile
 		GlobalStore.toggleSidebar(true)
 	}
 })
@@ -125,8 +125,8 @@ const onCloseSidebarButtonClick = () => {
 	GlobalStore.toggleSidebar(true)
 }
 
-//在頁面重新整理時將vuex裡的資訊儲存到localStorage裡
-window.addEventListener('beforeunload', () => {
+// 頁面重整時保存登入狀態
+const handleBeforeUnload = () => {
 	if (userData.value.status === true) {
 		sessionStorage.setItem('loginStatus', Boolean(userData.value.status))
 		sessionStorage.setItem('loginUserID', userData.value.userID)
@@ -138,19 +138,104 @@ window.addEventListener('beforeunload', () => {
 		sessionStorage.setItem('loginRoles', userData.value.roles)
 		sessionStorage.setItem('loginAccessList', JSON.stringify(userData.value.accessList))
 	} else {
-		// console.log('@@@@@@@@')
-		// console.log(router.currentRoute.value)
-		if (router.currentRoute.value.path != '/auth/login') {
+		if (router.currentRoute.value.path !== '/auth/login') {
 			authService().logOut()
 		}
 	}
+}
+
+window.addEventListener('beforeunload', handleBeforeUnload)
+
+onUnmounted(() => {
+	window.removeEventListener('beforeunload', handleBeforeUnload)
 })
 </script>
 
-<style lang="scss" scope>
-// Prevent icon jump on animation
+<style lang="scss" scoped>
+// === AppLayout - Light Mode 預設樣式 ===
+.app-layout {
+	min-height: 100vh;
+	background: #f8fafc;
+
+	// === 側邊欄包裝器 ===
+	&__sidebar-wrapper {
+		&.minimized {
+			// 最小化時的樣式
+		}
+	}
+
+	&__close-btn {
+		display: flex;
+		justify-content: flex-end;
+		padding: 1rem;
+	}
+
+	// === 主內容區 ===
+	&__main {
+		display: flex;
+		flex-direction: column;
+		min-height: calc(100vh - 64px);
+		padding: 0;
+		background: #f8fafc;
+	}
+
+	// === 麵包屑導航 ===
+	&__breadcrumb {
+		padding: 1rem 1.5rem 0;
+	}
+
+	// === 頁面內容 ===
+	&__content {
+		flex: 1;
+		padding: 1rem 1.5rem 1.5rem;
+		max-width: 100%;
+		overflow-x: hidden;
+	}
+}
+
+// === 響應式調整 ===
+@media screen and (max-width: 768px) {
+	.app-layout {
+		&__breadcrumb {
+			padding: 0.75rem 1rem 0;
+		}
+
+		&__content {
+			padding: 0.75rem 1rem 1rem;
+		}
+	}
+}
+</style>
+
+<style lang="scss">
+// === AppLayout - Dark Mode 樣式 (非 scoped) ===
+body.dark-mode,
+body.va-dark {
+	.app-layout {
+		background: #0f172a !important;
+	}
+
+	.app-layout__main {
+		background: #0f172a !important;
+	}
+}
+</style>
+
+<style lang="scss">
+// === 全域側邊欄修正 ===
 .va-sidebar {
 	width: unset !important;
 	min-width: unset !important;
+}
+
+// === 全域 Layout 調整 ===
+.va-layout {
+	&__area--top {
+		z-index: 100;
+	}
+
+	&__area--left {
+		z-index: 99;
+	}
 }
 </style>

@@ -83,6 +83,8 @@
 		"resetLayout": "重設版面",
 		"hiddenBlocks": "已隱藏的區塊",
 		"columns": "欄",
+		"columnWidth": "欄位寬度",
+		"setColumnWidth": "設定為",
 		"viewMachine": "查看機台"
 	},
 	"history": {

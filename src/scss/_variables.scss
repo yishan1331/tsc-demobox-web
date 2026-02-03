@@ -1,50 +1,58 @@
 @use 'sass:color';
 
 // ============================================================================
-// 🎨 TSC 色彩設計系統 - 核心變數定義
-// 根據 CLAUDE.md 色彩規範，所有 UI 必須使用以下色彩變數
-// Logo 檔案位置：src/assets/tsc_logo.png
+// 🎨 TSC 色彩設計系統 - 科技簡約風格 (Tech Minimalist)
+// 設計風格：Flat Design + Dark Tech Sidebar
+// 參考：UI/UX Pro Max Design System
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// 主色系 (PRIMARY COLORS) - 呼應 Logo 青藍色調
+// 主色系 (PRIMARY COLORS) - 科技青藍
 // ----------------------------------------------------------------------------
-$tsc-blue: #75daee !default;           // 主青藍色 - 主要品牌色、重要按鈕、連結
-$tsc-grey: #daddde !default;           // 輔助灰色 - 背景色、邊框、分隔線
+$tsc-blue: #0ea5e9 !default;           // 科技藍 - 主要品牌色 (更鮮明)
+$tsc-grey: #e2e8f0 !default;           // 邊框灰 - 分隔線、邊框
 $tsc-white: #ffffff !default;          // 純白色 - 主要背景、卡片背景
-$tsc-black: #000000 !default;          // 純黑色 - 主要文字色
+$tsc-black: #0f172a !default;          // 深色文字 - 非純黑，更柔和
 
 // ----------------------------------------------------------------------------
-// Logo 延伸色系 (LOGO-DERIVED COLORS)
+// 科技深色系 (TECH DARK COLORS) - 側邊欄、深色元素
 // ----------------------------------------------------------------------------
-$tsc-blue-deep: #1a4b8c !default;      // Logo 深藍色 - 深色強調、圖表主色
-$tsc-blue-sky: #4fc3dc !default;       // Logo 天藍色 - 漸層過渡、次要元素
-$tsc-purple: #7b2d8e !default;         // Logo 紫色 - 特殊強調、標題裝飾
-$tsc-magenta: #e91e63 !default;        // Logo 洋紅色 - 警示強調、重要通知
-$tsc-purple-text: #6a1b9a !default;    // Logo 文字紫色 - 副標題、特殊文字
+$tsc-blue-deep: #1e293b !default;      // 深灰藍 - 側邊欄背景
+$tsc-blue-darker: #0f172a !default;    // 最深色 - 暗色模式背景
+$tsc-blue-sky: #38bdf8 !default;       // 天藍色 - 高亮元素
+$tsc-blue-light: #7dd3fc !default;     // 淺天藍 - 次要高亮
+
+// ----------------------------------------------------------------------------
+// 強調色系 (ACCENT COLORS)
+// ----------------------------------------------------------------------------
+$tsc-purple: #8b5cf6 !default;         // 現代紫 - 特殊強調
+$tsc-magenta: #ec4899 !default;        // 粉紅 - 警示強調
+$tsc-purple-text: #7c3aed !default;    // 紫色文字
 
 // ----------------------------------------------------------------------------
 // 衍生色調 (DERIVED COLORS)
 // ----------------------------------------------------------------------------
-$tsc-blue-dark: #4ab8dc !default;      // 深青藍色 - hover狀態、active狀態
-$tsc-blue-medium: #5bc2e5 !default;    // 中青藍色 - 次要按鈕、輔助元素
-$tsc-grey-light: #f8f9fa !default;     // 極淺灰 - 卡片背景、區域背景
-$tsc-grey-neutral: #6c757d !default;   // 中性灰 - 次要文字、說明文字
+$tsc-blue-dark: #0284c7 !default;      // 深科技藍 - hover/active狀態
+$tsc-blue-medium: #38bdf8 !default;    // 淺科技藍 - 次要元素
+$tsc-grey-light: #f8fafc !default;     // 極淺灰 - 背景色
+$tsc-grey-neutral: #64748b !default;   // 中性灰 - 次要文字、說明文字
+$tsc-grey-dark: #334155 !default;      // 深灰 - 暗色模式邊框
 
 // ----------------------------------------------------------------------------
-// 機台狀態色彩 (MACHINE STATUS COLORS)
+// 機台狀態色彩 (MACHINE STATUS COLORS) - 科技風
 // ----------------------------------------------------------------------------
-$machine-running: #4caf50 !default;    // 運行中 - 綠色
-$machine-idle: #9e9e9e !default;       // 待機 - 灰色
-$machine-warning: #ff9800 !default;    // 警告 - 橙色
-$machine-error: #f44336 !default;      // 異常 - 紅色
+$machine-running: #22c55e !default;    // 運行中 - 科技綠
+$machine-idle: #94a3b8 !default;       // 待機 - 淺灰
+$machine-warning: #f59e0b !default;    // 警告 - 琥珀色
+$machine-error: #ef4444 !default;      // 異常 - 紅色
 
 // ----------------------------------------------------------------------------
-// 漸層定義 (GRADIENTS) - 呼應 Logo 漸層風格
+// 漸層定義 (GRADIENTS) - 科技風漸層
 // ----------------------------------------------------------------------------
-$tsc-gradient-blue: linear-gradient(135deg, $tsc-blue-deep 0%, $tsc-blue-sky 100%) !default;
-$tsc-gradient-purple: linear-gradient(135deg, $tsc-purple 0%, $tsc-magenta 100%) !default;
+$tsc-gradient-blue: linear-gradient(135deg, $tsc-blue 0%, $tsc-blue-sky 100%) !default;
+$tsc-gradient-dark: linear-gradient(135deg, $tsc-blue-deep 0%, $tsc-blue-darker 100%) !default;
 $tsc-gradient-header: linear-gradient(135deg, $tsc-grey-light 0%, #f0f7fa 100%) !default;
+$tsc-gradient-purple: linear-gradient(135deg, $tsc-purple 0%, $tsc-magenta 100%) !default;
 
 // ----------------------------------------------------------------------------
 // 語義化色彩變數 (SEMANTIC COLOR VARIABLES)
@@ -64,8 +72,9 @@ $color-info: $tsc-blue-sky !default;
 // ----------------------------------------------------------------------------
 $text-primary: $tsc-black !default;
 $text-secondary: $tsc-grey-neutral !default;
-$text-muted: #999999 !default;
+$text-muted: #94a3b8 !default;
 $text-light: $tsc-white !default;
+$text-inverse: #f8fafc !default;       // 深色背景用
 
 // ----------------------------------------------------------------------------
 // 背景色彩 (BACKGROUND COLORS)
@@ -73,9 +82,36 @@ $text-light: $tsc-white !default;
 $bg-primary: $tsc-white !default;
 $bg-secondary: $tsc-grey-light !default;
 $bg-accent: rgba($tsc-blue, 0.1) !default;
+$bg-sidebar: $tsc-blue-deep !default;  // 深色側邊欄
+$bg-hover: #f1f5f9 !default;
+$bg-active: #e0f2fe !default;
 
 // ----------------------------------------------------------------------------
 // 邊框色彩 (BORDER COLORS)
 // ----------------------------------------------------------------------------
 $border-color: $tsc-grey !default;
 $border-color-light: rgba($tsc-blue, 0.2) !default;
+$border-color-dark: $tsc-grey-dark !default;
+
+// ----------------------------------------------------------------------------
+// 陰影 (SHADOWS) - 科技簡約風格使用極少陰影
+// ----------------------------------------------------------------------------
+$shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05) !default;
+$shadow-md: 0 4px 6px rgba(15, 23, 42, 0.07) !default;
+$shadow-lg: 0 10px 15px rgba(15, 23, 42, 0.1) !default;
+
+// ----------------------------------------------------------------------------
+// 圓角 (BORDER RADIUS) - 科技風使用較小圓角
+// ----------------------------------------------------------------------------
+$radius-sm: 4px !default;
+$radius-md: 8px !default;
+$radius-lg: 12px !default;
+$radius-xl: 16px !default;
+$radius-full: 9999px !default;
+
+// ----------------------------------------------------------------------------
+// 動畫 (ANIMATIONS) - 快速、簡潔
+// ----------------------------------------------------------------------------
+$transition-fast: 0.15s ease !default;
+$transition-normal: 0.2s ease !default;
+$transition-slow: 0.3s ease !default;

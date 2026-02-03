@@ -13,6 +13,7 @@ defineProps<{
 </script>
 
 <style lang="scss" scoped>
+// === FormGroup - 使用 CSS 變數支援 Light/Dark Mode ===
 .form-group {
 	display: flex;
 	flex-direction: column;
@@ -22,6 +23,6 @@ defineProps<{
 .form-label {
 	font-size: 0.875rem;
 	font-weight: 500;
-	color: #666;
+	color: var(--va-text-secondary);
 }
 </style>

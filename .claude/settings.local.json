@@ -19,7 +19,8 @@
       "Bash(pnpm list:*)",
       "WebSearch",
       "Bash(pnpm run:*)",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "Skill(ui-ux-pro-max)"
     ],
     "deny": []
   },

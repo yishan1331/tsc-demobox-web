@@ -47,7 +47,12 @@
 							:key="sensor.sensor_id"
 							class="machine-card"
 							:class="{ 'is-online': sensor.is_online, 'is-offline': !sensor.is_online }"
+							role="button"
+							tabindex="0"
+							:aria-label="`${formatMachineName(sensor).replace('\n', ' ')} - ${sensor.is_online ? t('sensor.online') : t('sensor.offline')}`"
 							@click="handleSensorClick(sensor)"
+							@keydown.enter="handleSensorClick(sensor)"
+							@keydown.space.prevent="handleSensorClick(sensor)"
 						>
 							<div class="machine-label">
 								{{ formatMachineName(sensor) }}
@@ -117,7 +122,12 @@ const handleSensorClick = (sensor: SensorStatus) => {
 @use '@/scss/variables' as *;
 
 .sensor-overview {
-	padding: 1rem;
+	padding: 0.5rem;
+}
+
+// ===== 更新時間文字 =====
+.text-gray-600 {
+	color: $text-secondary;
 }
 
 // ===== 三欄並排容器 =====
@@ -127,7 +137,7 @@ const handleSensorClick = (sensor: SensorStatus) => {
 	gap: 1.5rem;
 	align-items: start;
 
-	@media (max-width: 1024px) {
+	@media (max-width: 1200px) {
 		grid-template-columns: repeat(2, 1fr);
 	}
 
@@ -138,26 +148,43 @@ const handleSensorClick = (sensor: SensorStatus) => {
 
 // 每個區塊的卡片
 .sensor-section-card {
-	border: 1px solid $tsc-grey;
-	border-radius: 8px;
+	border: 1px solid $border-color;
+	border-radius: $radius-lg;
 	padding: 1.25rem;
-	background: $tsc-white;
+	background: $bg-primary;
+	transition: $transition-fast;
+
+	&:hover {
+		border-color: $tsc-blue;
+	}
 }
 
 // 區塊標題
 .section-title {
-	font-size: 1.5rem;
+	font-size: 1.25rem;
 	font-weight: 600;
-	color: #333;
+	color: $text-primary;
 	margin-bottom: 1rem;
-	padding-bottom: 0.5rem;
+	padding-bottom: 0.75rem;
+	border-bottom: 1px solid $border-color;
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+
+	&::before {
+		content: '';
+		width: 4px;
+		height: 1.25rem;
+		background: $tsc-blue;
+		border-radius: 2px;
+	}
 }
 
 // 機台網格
 .machine-grid {
 	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-	gap: 0.75rem;
+	grid-template-columns: repeat(auto-fill, minmax(75px, 1fr));
+	gap: 0.625rem;
 }
 
 // 機台卡片
@@ -166,38 +193,50 @@ const handleSensorClick = (sensor: SensorStatus) => {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	border-radius: 6px;
+	border-radius: $radius-md;
 	cursor: pointer;
-	transition: all 0.2s ease;
-	min-height: 70px;
-	max-width: 100px;
+	transition: all 0.15s ease;
+	min-height: 65px;
+	max-width: 90px;
+	border: 2px solid transparent;
 
 	&:hover {
-		transform: scale(1.05);
-		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+		transform: translateY(-2px);
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
 	}
 
-	// 上線狀態 - 綠色
+	// 上線狀態 - 科技綠
 	&.is-online {
 		background: $machine-running;
+		border-color: darken($machine-running, 10%);
 
 		.machine-label {
-			color: $tsc-white;
+			color: #ffffff;
+			text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+		}
+
+		&:hover {
+			background: darken($machine-running, 5%);
 		}
 	}
 
 	// 離線狀態 - 灰色
 	&.is-offline {
 		background: $machine-idle;
+		border-color: darken($machine-idle, 10%);
 
 		.machine-label {
-			color: $tsc-grey-neutral;
+			color: #ffffff;
+		}
+
+		&:hover {
+			background: darken($machine-idle, 5%);
 		}
 	}
 
 	.machine-label {
-		font-size: 0.875rem;
-		font-weight: 500;
+		font-size: 0.8125rem;
+		font-weight: 600;
 		text-align: center;
 		white-space: pre-line;
 		line-height: 1.3;
@@ -207,5 +246,63 @@ const handleSensorClick = (sensor: SensorStatus) => {
 .loading-state,
 .error-state {
 	min-height: 300px;
+}
+</style>
+
+<style lang="scss">
+// ===== 暗色模式 (非 scoped，確保樣式正確套用) =====
+body.dark-mode,
+body.va-dark {
+	.sensor-overview {
+		.text-gray-600 {
+			color: #94a3b8 !important;
+		}
+	}
+
+	// 區塊卡片 - 深色背景
+	.sensor-section-card {
+		background: #1e293b !important;
+		border-color: #334155 !important;
+		box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
+
+		&:hover {
+			border-color: #38bdf8 !important;
+		}
+	}
+
+	// 標題 - 淺色文字
+	.section-title {
+		color: #f8fafc !important;
+		border-bottom-color: #334155 !important;
+
+		&::before {
+			background: #38bdf8 !important;
+		}
+	}
+
+	// 機台卡片顏色保持不變（狀態色彩）
+	.machine-card {
+		&.is-online {
+			background: #22c55e !important;
+			border-color: #16a34a !important;
+
+			&:hover {
+				background: #16a34a !important;
+			}
+		}
+
+		&.is-offline {
+			background: #64748b !important;
+			border-color: #475569 !important;
+
+			&:hover {
+				background: #475569 !important;
+			}
+
+			.machine-label {
+				color: #ffffff !important;
+			}
+		}
+	}
 }
 </style>

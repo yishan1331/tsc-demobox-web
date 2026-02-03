@@ -1,5 +1,5 @@
 <template>
-	<RouterView class="bg-white" />
+	<RouterView class="app-root" />
 </template>
 
 <script setup>
@@ -99,6 +99,8 @@ onUnmounted(() => {
 </script>
 
 <style lang="scss">
+@use '@/scss/variables' as *;
+
 #app {
 	font-family: 'Inter', Avenir, Helvetica, Arial, sans-serif;
 	-webkit-font-smoothing: antialiased;
@@ -108,6 +110,21 @@ onUnmounted(() => {
 body {
 	margin: 0;
 	min-width: 20rem;
+}
+
+// === 根元素背景色 (適應 dark mode) ===
+.app-root {
+	background-color: #ffffff;
+	min-height: 100vh;
+	transition: background-color 0.2s ease;
+}
+
+// === Dark Mode 全域樣式 ===
+body.dark-mode,
+body.va-dark {
+	.app-root {
+		background-color: #0f172a;
+	}
 }
 
 .va-modal__dialog {

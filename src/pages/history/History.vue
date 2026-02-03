@@ -293,6 +293,7 @@ const handlePageChange = (page: number) => {
 </script>
 
 <style scoped lang="scss">
+// === History Page - 使用 CSS 變數支援 Light/Dark Mode ===
 .history-page {
 	padding: 1rem;
 }
@@ -300,7 +301,7 @@ const handlePageChange = (page: number) => {
 .page-title {
 	font-size: 1.5rem;
 	font-weight: 600;
-	color: #333;
+	color: var(--va-text-primary);
 	margin-bottom: 1.5rem;
 }
 
@@ -311,7 +312,7 @@ const handlePageChange = (page: number) => {
 	align-items: center;
 	margin-bottom: 1rem;
 	padding: 0.75rem 1rem;
-	background: #f8f9fa;
+	background: var(--va-background-secondary);
 	border-radius: 8px;
 
 	@media (max-width: 768px) {
@@ -323,13 +324,13 @@ const handlePageChange = (page: number) => {
 
 .summary-text {
 	font-size: 0.875rem;
-	color: #333;
+	color: var(--va-text-primary);
 	font-weight: 500;
 }
 
 .summary-page {
 	font-size: 0.875rem;
-	color: #666;
+	color: var(--va-text-secondary);
 }
 
 // 數據卡片
@@ -342,7 +343,7 @@ const handlePageChange = (page: number) => {
 	justify-content: center;
 	margin-top: 1.5rem;
 	padding-top: 1rem;
-	border-top: 1px solid #eee;
+	border-top: 1px solid var(--va-border-color);
 }
 
 // 空狀態
@@ -361,7 +362,7 @@ const handlePageChange = (page: number) => {
 .empty-text {
 	margin-top: 1rem;
 	font-size: 1rem;
-	color: #666;
+	color: var(--va-text-secondary);
 	text-align: center;
 }
 
@@ -371,6 +372,6 @@ const handlePageChange = (page: number) => {
 }
 
 .text-gray-400 {
-	color: #9ca3af;
+	color: var(--va-text-muted);
 }
 </style>

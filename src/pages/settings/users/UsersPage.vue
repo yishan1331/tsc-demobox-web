@@ -326,6 +326,7 @@ watch(
 </script>
 
 <style scoped lang="scss">
+// === UsersPage - 使用 CSS 變數支援 Light/Dark Mode ===
 .users-page {
 	padding: 1rem;
 }
@@ -333,12 +334,23 @@ watch(
 .page-title {
 	font-size: 1.5rem;
 	font-weight: 600;
-	color: #333;
+	color: var(--va-text-primary);
 	margin-bottom: 1.5rem;
 }
 
 // 數據卡片
 .data-card {
 	margin-bottom: 1.5rem;
+}
+</style>
+
+<style lang="scss">
+// === Modal 內的暗色模式 ===
+body.dark-mode .va-modal,
+body.va-dark .va-modal,
+.va-dark .va-modal {
+	.text-gray-600 {
+		color: #94a3b8 !important;
+	}
 }
 </style>

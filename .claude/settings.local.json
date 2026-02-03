@@ -1,0 +1,39 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pnpm type-check:*)",
+      "Bash(pnpm lint:*)",
+      "Bash(grep:*)",
+      "Bash(python3:*)",
+      "Bash(find:*)",
+      "Bash(echo)",
+      "Bash(pnpm info:*)",
+      "Bash(pnpm build:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "WebFetch(domain:ui.vuestic.dev)",
+      "Bash(rm:*)",
+      "mcp__ide__getDiagnostics",
+      "Bash(npx tsc:*)",
+      "Bash(pnpm list:*)",
+      "WebSearch",
+      "Bash(pnpm run:*)",
+      "Bash(node:*)"
+    ],
+    "deny": []
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|MultiEdit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "npx prettier --check ."
+          }
+        ]
+      }
+    ]
+  }
+}

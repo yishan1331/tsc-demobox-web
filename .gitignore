@@ -1,0 +1,59 @@
+# 依賴
+node_modules
+.pnpm-store/
+
+# 建置輸出
+dist
+dist-ssr
+*.local
+build
+
+# 日誌
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# 編輯器目錄和檔案
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.cursor
+.vscode
+
+# 測試覆蓋率
+coverage
+.nyc_output
+
+# 環境變數
+.env
+.env.*
+!.env.example
+
+# 快取
+.cache
+.nuxt
+.nitro
+.output
+.eslintcache
+.temp
+.tmp
+
+# 開發用模擬數據
+src/mock/*
+!src/mock/mock.example.ts
+!src/mock/setupMock.ts
+
+# 其他
+.DS_Store
+**/.DS_Store
+api-generator/typedoc.json
+
+# .claude/settings.local*

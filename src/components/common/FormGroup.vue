@@ -1,0 +1,27 @@
+<template>
+	<div class="form-group">
+		<label v-if="label" class="form-label">{{ label }}</label>
+		<slot />
+	</div>
+</template>
+
+<script setup lang="ts">
+defineProps<{
+	/** 欄位標籤 */
+	label?: string
+}>()
+</script>
+
+<style lang="scss" scoped>
+.form-group {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}
+
+.form-label {
+	font-size: 0.875rem;
+	font-weight: 500;
+	color: #666;
+}
+</style>

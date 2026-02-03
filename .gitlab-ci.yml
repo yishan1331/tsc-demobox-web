@@ -1,0 +1,66 @@
+image: node:22-alpine
+
+# workflow:rules 控制整個 pipeline 的觸發條件
+workflow:
+    rules:
+        # 1. 如果是合併請求 (Merge Request) 事件，則執行 pipeline
+        - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+        # 2. 如果是推送到 'master' 或 'develop' 分支，則執行 pipeline
+        - if: '$CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "develop"'
+        # 3. 其他情況 (例如：推送到功能分支) 則不執行
+        - when: never
+
+# 定義 CI/CD 的各個階段
+stages:
+    - install
+    - test
+    - build
+
+# 快取設定
+cache:
+    key:
+        files:
+            - pnpm-lock.yaml
+    paths:
+        - .pnpm-store
+
+# 在所有 job 開始前執行的腳本
+before_script:
+    - npm install -g pnpm
+    - pnpm config set store-dir .pnpm-store
+
+# 安裝依賴的 job
+install-dependencies:
+    stage: install
+    script:
+        - pnpm install --frozen-lockfile
+    cache:
+        policy: push
+
+# 執行程式碼檢查的 job
+lint:
+    stage: test
+    script:
+        - pnpm lint
+    needs:
+        - install-dependencies
+
+# 執行 TypeScript 型別檢查的 job
+type-check:
+    stage: test
+    script:
+        - pnpm type-check
+    needs:
+        - install-dependencies
+
+# 建構專案的 job
+build-project:
+    stage: build
+    script:
+        - pnpm build
+    needs:
+        - install-dependencies
+    artifacts:
+        paths:
+            - dist/
+        expire_in: 1 week

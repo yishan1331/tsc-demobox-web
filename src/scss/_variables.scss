@@ -1,0 +1,81 @@
+@use 'sass:color';
+
+// ============================================================================
+// 🎨 TSC 色彩設計系統 - 核心變數定義
+// 根據 CLAUDE.md 色彩規範，所有 UI 必須使用以下色彩變數
+// Logo 檔案位置：src/assets/tsc_logo.png
+// ============================================================================
+
+// ----------------------------------------------------------------------------
+// 主色系 (PRIMARY COLORS) - 呼應 Logo 青藍色調
+// ----------------------------------------------------------------------------
+$tsc-blue: #75daee !default;           // 主青藍色 - 主要品牌色、重要按鈕、連結
+$tsc-grey: #daddde !default;           // 輔助灰色 - 背景色、邊框、分隔線
+$tsc-white: #ffffff !default;          // 純白色 - 主要背景、卡片背景
+$tsc-black: #000000 !default;          // 純黑色 - 主要文字色
+
+// ----------------------------------------------------------------------------
+// Logo 延伸色系 (LOGO-DERIVED COLORS)
+// ----------------------------------------------------------------------------
+$tsc-blue-deep: #1a4b8c !default;      // Logo 深藍色 - 深色強調、圖表主色
+$tsc-blue-sky: #4fc3dc !default;       // Logo 天藍色 - 漸層過渡、次要元素
+$tsc-purple: #7b2d8e !default;         // Logo 紫色 - 特殊強調、標題裝飾
+$tsc-magenta: #e91e63 !default;        // Logo 洋紅色 - 警示強調、重要通知
+$tsc-purple-text: #6a1b9a !default;    // Logo 文字紫色 - 副標題、特殊文字
+
+// ----------------------------------------------------------------------------
+// 衍生色調 (DERIVED COLORS)
+// ----------------------------------------------------------------------------
+$tsc-blue-dark: #4ab8dc !default;      // 深青藍色 - hover狀態、active狀態
+$tsc-blue-medium: #5bc2e5 !default;    // 中青藍色 - 次要按鈕、輔助元素
+$tsc-grey-light: #f8f9fa !default;     // 極淺灰 - 卡片背景、區域背景
+$tsc-grey-neutral: #6c757d !default;   // 中性灰 - 次要文字、說明文字
+
+// ----------------------------------------------------------------------------
+// 機台狀態色彩 (MACHINE STATUS COLORS)
+// ----------------------------------------------------------------------------
+$machine-running: #4caf50 !default;    // 運行中 - 綠色
+$machine-idle: #9e9e9e !default;       // 待機 - 灰色
+$machine-warning: #ff9800 !default;    // 警告 - 橙色
+$machine-error: #f44336 !default;      // 異常 - 紅色
+
+// ----------------------------------------------------------------------------
+// 漸層定義 (GRADIENTS) - 呼應 Logo 漸層風格
+// ----------------------------------------------------------------------------
+$tsc-gradient-blue: linear-gradient(135deg, $tsc-blue-deep 0%, $tsc-blue-sky 100%) !default;
+$tsc-gradient-purple: linear-gradient(135deg, $tsc-purple 0%, $tsc-magenta 100%) !default;
+$tsc-gradient-header: linear-gradient(135deg, $tsc-grey-light 0%, #f0f7fa 100%) !default;
+
+// ----------------------------------------------------------------------------
+// 語義化色彩變數 (SEMANTIC COLOR VARIABLES)
+// ----------------------------------------------------------------------------
+$color-primary: $tsc-blue !default;
+$color-primary-dark: $tsc-blue-dark !default;
+$color-primary-light: $tsc-blue-medium !default;
+$color-secondary: $tsc-grey !default;
+$color-accent: $tsc-purple !default;
+$color-danger: $machine-error !default;
+$color-warning: $machine-warning !default;
+$color-success: $machine-running !default;
+$color-info: $tsc-blue-sky !default;
+
+// ----------------------------------------------------------------------------
+// 文字色彩 (TEXT COLORS)
+// ----------------------------------------------------------------------------
+$text-primary: $tsc-black !default;
+$text-secondary: $tsc-grey-neutral !default;
+$text-muted: #999999 !default;
+$text-light: $tsc-white !default;
+
+// ----------------------------------------------------------------------------
+// 背景色彩 (BACKGROUND COLORS)
+// ----------------------------------------------------------------------------
+$bg-primary: $tsc-white !default;
+$bg-secondary: $tsc-grey-light !default;
+$bg-accent: rgba($tsc-blue, 0.1) !default;
+
+// ----------------------------------------------------------------------------
+// 邊框色彩 (BORDER COLORS)
+// ----------------------------------------------------------------------------
+$border-color: $tsc-grey !default;
+$border-color-light: rgba($tsc-blue, 0.2) !default;

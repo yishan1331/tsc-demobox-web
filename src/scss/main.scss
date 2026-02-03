@@ -1,0 +1,336 @@
+@use 'vuestic-sass';
+@use 'icon-fonts/index';
+@use './variables' as *;
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+	@apply text-regularMedium;
+
+	font-size: 1rem;
+
+	// TODO Move to some other place so that it's more elegant.
+	--va-checkbox-font-size: 0.875rem;
+	--va-card-box-shadow: none; // TODO Remove after https://github.com/epicmaxco/vuestic-ui/issues/3964
+	--va-card-padding: 1rem;
+	--va-font-family: 'Inter', sans-serif;
+	--va-card-background-color: var(--va-background-primary);
+}
+
+code,
+kbd,
+samp,
+pre {
+	font-family: monospace;
+	font-size: 1em;
+}
+
+.ellipsis {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.page-title {
+	@apply text-[32px] md:text-5xl font-bold leading-9 md:leading-[56px] max-sm:mt-6 mb-6 md:mb-4;
+}
+
+.h1 {
+	@apply text-[32px] md:text-5xl font-bold leading-9 md:leading-[56px] max-sm:mt-6 mb-6 md:mb-4;
+}
+
+.h3,
+.page-sub-title {
+	@apply text-2xl font-bold leading-[30px];
+}
+
+.h5 {
+	@apply font-bold leading-tight;
+}
+
+.block-title {
+	@apply text-2xl font-bold mb-2;
+}
+
+.pricing-plan-card-title {
+	@apply text-[28px] md:text-[32px] leading-10 font-bold;
+}
+
+.text-regular-small {
+	font-size: 0.8125rem;
+	line-height: 1rem;
+}
+
+// ============================================================================
+// TSC 標準化 CSS 工具類別
+// ============================================================================
+
+// 背景色
+.bg-tsc-grey {
+	background-color: $tsc-grey;
+}
+
+.bg-tsc-grey-light {
+	background-color: $tsc-grey-light;
+}
+
+.bg-tsc-blue {
+	background-color: $tsc-blue;
+}
+
+.bg-tsc-blue-dark {
+	background-color: $tsc-blue-dark;
+}
+
+.bg-tsc-blue-deep {
+	background-color: $tsc-blue-deep;
+}
+
+.bg-tsc-purple {
+	background-color: $tsc-purple;
+}
+
+.bg-tsc-magenta {
+	background-color: $tsc-magenta;
+}
+
+// 文字色
+.text-tsc-blue {
+	color: $tsc-blue;
+}
+
+.text-tsc-blue-dark {
+	color: $tsc-blue-dark;
+}
+
+.text-tsc-blue-deep {
+	color: $tsc-blue-deep;
+}
+
+.text-tsc-purple {
+	color: $tsc-purple;
+}
+
+.text-tsc-magenta {
+	color: $tsc-magenta;
+}
+
+.text-tsc-grey-neutral {
+	color: $tsc-grey-neutral;
+}
+
+.text-tsc-black {
+	color: $tsc-black;
+}
+
+// 邊框色
+.border-tsc-grey {
+	border-color: $tsc-grey;
+}
+
+.border-tsc-blue {
+	border-color: $tsc-blue;
+}
+
+.border-tsc-purple {
+	border-color: $tsc-purple;
+}
+
+// 漸層背景
+.bg-tsc-gradient-blue {
+	background: $tsc-gradient-blue;
+}
+
+.bg-tsc-gradient-purple {
+	background: $tsc-gradient-purple;
+}
+
+.bg-tsc-gradient-header {
+	background: $tsc-gradient-header;
+}
+
+// ============================================================================
+// 摺疊按鈕共用樣式
+// ============================================================================
+.collapsible {
+	padding: 1rem;
+	width: 100%;
+	border: none;
+	text-align: left;
+	outline: none;
+	font-size: 15px;
+	display: flex;
+	align-items: center;
+	background: none;
+	cursor: pointer;
+	font-weight: 500;
+}
+
+.collapsible-content {
+	transition: all 0.3s ease;
+}
+
+// ============================================================================
+// 修正 VaIcon Material Icons 全域顯示問題
+// ============================================================================
+.va-icon.material-icons {
+	font-family: 'Material Icons' !important;
+	font-weight: normal;
+	font-style: normal;
+	font-size: inherit;
+	line-height: 1;
+	letter-spacing: normal;
+	text-transform: none;
+	display: inline-block;
+	white-space: nowrap;
+	word-wrap: normal;
+	direction: ltr;
+	-webkit-font-feature-settings: 'liga';
+	font-feature-settings: 'liga';
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+// ============================================================================
+// 全域表格樣式 - 適用於所有 VaDataTable
+// ============================================================================
+.table-section {
+	border-radius: 0.5rem;
+
+	.loading-container {
+		background: #ffffff !important;
+		border: 1px solid $tsc-grey !important;
+		border-radius: 0.5rem !important;
+		padding: 1rem !important;
+		min-height: 300px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+}
+
+// TSC 統一表格樣式 - 套用到所有配置了 tsc-data-table class 的表格
+.tsc-data-table {
+	border: 1px solid $tsc-grey !important;
+	border-radius: 0.5rem !important;
+	background: white !important;
+
+	// 移除所有預設樣式
+	.va-data-table__table-container {
+		border: none !important;
+		border-radius: 0 !important;
+		box-shadow: none !important;
+		background: transparent !important;
+	}
+
+	.va-data-table__table {
+		border: none !important;
+		background: transparent !important;
+		table-layout: fixed !important;
+	}
+
+	// 表頭樣式
+	.va-data-table__table-thead {
+		.va-data-table__table-th {
+			background: #e5e7eb !important;
+			padding: 12px 16px !important;
+			font-weight: 600 !important;
+			font-size: 0.875rem !important;
+			color: #374151 !important;
+			border: none !important;
+			border-bottom: 2px solid $tsc-grey !important;
+
+			&:first-child {
+				border-top-left-radius: 0.5rem !important;
+			}
+
+			&:last-child {
+				border-top-right-radius: 0.5rem !important;
+				border-right: none !important;
+			}
+		}
+	}
+
+	// 表格內容樣式
+	.va-data-table__table-tbody {
+		background: transparent !important;
+
+		.va-data-table__table-tr {
+			background: #ffffff !important;
+			border: 1px solid $tsc-grey !important;
+			border-radius: 0.5rem !important;
+			margin-bottom: 0.5rem !important;
+			transition: all 0.3s ease !important;
+			display: table-row !important;
+			position: relative !important;
+
+			&:hover {
+				background: linear-gradient(
+					135deg,
+					color.adjust($tsc-grey, $lightness: 35%) 0%,
+					color.adjust($tsc-grey, $lightness: 45%) 100%
+				) !important;
+				box-shadow:
+					0 0 0 1px $tsc-grey,
+					0 0 12px rgba($tsc-grey-neutral, 0.3),
+					inset 0 0 8px rgba($tsc-grey, 0.03) !important;
+				transform: translateY(0px) scale(1.01) !important;
+				border-color: $tsc-grey !important;
+				cursor: pointer !important;
+				position: relative !important;
+				z-index: 10 !important;
+			}
+
+			&:last-child {
+				margin-bottom: 0 !important;
+			}
+
+			.va-data-table__table-td {
+				padding: 16px !important;
+				font-size: 0.875rem !important;
+				border: none !important;
+				background: transparent !important;
+				vertical-align: middle !important;
+				overflow: hidden !important;
+				text-overflow: ellipsis !important;
+				white-space: nowrap !important;
+
+				&:first-child {
+					border-top-left-radius: 0.5rem !important;
+					border-bottom-left-radius: 0.5rem !important;
+				}
+
+				&:last-child {
+					border-top-right-radius: 0.5rem !important;
+					border-bottom-right-radius: 0.5rem !important;
+				}
+
+				// 包含按鈕、Badge、進度條等元素的 cell 不截斷
+				&:has(.va-button),
+				&:has(.va-badge),
+				&:has(.va-progress-bar),
+				&:has(.va-checkbox) {
+					overflow: visible !important;
+					text-overflow: unset !important;
+					white-space: normal !important;
+				}
+			}
+		}
+	}
+
+	// Loading overlay
+	.va-data-table__loading-overlay {
+		background: rgba(255, 255, 255, 0.9) !important;
+		border-radius: 0.5rem !important;
+	}
+}
+
+.va-badge {
+	--va-badge-font-size: 15px;
+}
+
+.va-input-label {
+	font-size: 1rem;
+}

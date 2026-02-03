@@ -1,0 +1,20 @@
+# Documentation files
+CLAUDE.md
+README.md
+CHANGELOG.md
+
+# Lock files
+pnpm-lock.yaml
+
+# Build output
+dist/
+build/
+
+# Dependencies
+node_modules/
+
+# Environment files
+.env*
+
+# Git files
+.gitignore

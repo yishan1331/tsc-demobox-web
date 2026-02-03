@@ -1,15 +1,23 @@
 import { ApiResult } from '@/types'
 import { api } from '@/utils/http-client'
 import { formatResult } from './common.api'
+import { API_SYSTEM } from '@/constants/api.constants'
 
 // ===== 感測器類型定義 =====
 export type SensorType = 'heading' | 'threading' | 'heat_treatment'
+
+// ===== 機台狀態類型 =====
+export type MachineStatus = 'running' | 'idle' | 'error' | 'offline' | 'unknown'
+
+// ===== 工時狀態類型 (與機台狀態一致) =====
+export type WorkTimeStatus = 'running' | 'idle' | 'error' | 'offline' | 'unknown'
 
 export interface SensorStatus {
 	sensor_id: string
 	sensor_name: string
 	sensor_type: SensorType
 	is_online: boolean
+	machine_status: MachineStatus
 	last_update: string
 }
 
@@ -18,12 +26,6 @@ export interface SensorStatusResponse {
 	threading: SensorStatus[]
 	heat_treatment: SensorStatus[]
 }
-
-// ===== 機台狀態類型 =====
-export type MachineStatus = 'running' | 'idle' | 'error' | 'offline'
-
-// ===== 工時狀態類型 =====
-export type WorkTimeStatus = 'running' | 'paused' | 'stopped' | 'error'
 
 export interface WorkTimeSegment {
 	start_time: string
@@ -113,7 +115,7 @@ export interface SensorHistoryResponse {
  * 取得所有感測器狀態總覽
  */
 export const getSensorStatus = async (): Promise<ApiResult<SensorStatusResponse>> => {
-	const apiResult = await api.get('TSC/sensors/status')
+	const apiResult = await api.get(`${API_SYSTEM}/1.0/sensors/status`)
 	return formatResult(apiResult) as ApiResult<SensorStatusResponse>
 }
 
@@ -124,7 +126,7 @@ export const getSensorRealtime = async (
 	sensorType: SensorType,
 	sensorId: string
 ): Promise<ApiResult<SensorRealtimeResponse>> => {
-	const apiResult = await api.get(`TSC/sensors/${sensorType}/${sensorId}/realtime`)
+	const apiResult = await api.get(`${API_SYSTEM}/1.0/sensors/${sensorType}/${sensorId}/realtime`)
 	return formatResult(apiResult) as ApiResult<SensorRealtimeResponse>
 }
 
@@ -141,7 +143,7 @@ export const getSensorHistory = async (
 		limit?: number
 	}
 ): Promise<ApiResult<SensorHistoryResponse>> => {
-	const apiResult = await api.get(`TSC/sensors/${sensorType}/${sensorId}/history`, { params })
+	const apiResult = await api.get(`${API_SYSTEM}/1.0/sensors/${sensorType}/${sensorId}/history`, { params })
 	return formatResult(apiResult) as ApiResult<SensorHistoryResponse>
 }
 
@@ -149,6 +151,6 @@ export const getSensorHistory = async (
  * 取得特定類型的感測器列表
  */
 export const getSensorList = async (sensorType: SensorType): Promise<ApiResult<SensorStatus[]>> => {
-	const apiResult = await api.get(`TSC/sensors/${sensorType}`)
+	const apiResult = await api.get(`${API_SYSTEM}/1.0/sensors/${sensorType}`)
 	return formatResult(apiResult) as ApiResult<SensorStatus[]>
 }

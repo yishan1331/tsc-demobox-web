@@ -14,9 +14,18 @@
 	"sidebar": {
 		"monitoring": {
 			"title": "Monitoring",
+			"overview": "Machine Overview",
+			"machine": "Machine Realtime",
 			"factoryOpStatus": "Factory Operation Status",
 			"eboard": "Production EBoard",
 			"machineMgmt": "Machine Management"
+		},
+		"history": {
+			"title": "History"
+		},
+		"settings": {
+			"title": "Settings",
+			"users": "User Management"
 		},
 		"prodReporting": {
 			"title": "Production Reporting",
@@ -761,9 +770,9 @@
 		"overview": "Machine Overview",
 		"machine": "Machine Realtime Status",
 		"history": "History Data",
-		"heading": "Heading",
-		"threading": "Threading",
-		"heat_treatment": "Heat Treatment",
+		"heading": "Heading Machine",
+		"threading": "Threading Machine",
+		"heat_treatment": "Heat Treatment Machine",
 		"online": "Running",
 		"offline": "Idle",
 		"total": "Total",
@@ -781,9 +790,12 @@
 		"status": "Status",
 		"statusRunning": "Running",
 		"statusIdle": "Idle",
+		"statusError": "Error",
+		"statusOffline": "Offline",
+		"statusUnknown": "Unknown",
 		"statusPaused": "Paused",
 		"statusStopped": "Stopped",
-		"statusError": "Error",
+		"dataTime": "Data Time",
 		"workTimeStatus": "Work Time Status",
 		"count": "Count",
 		"sensorLights": "Sensor Lights",
@@ -798,7 +810,9 @@
 		"columns": "Columns",
 		"columnWidth": "Column Width",
 		"setColumnWidth": "Set to",
-		"viewMachine": "View Machine"
+		"viewMachine": "View Machine",
+		"stopAutoRefresh": "Stop auto-refresh",
+		"startAutoRefresh": "Start auto-refresh"
 	},
 	"history": {
 		"sensorType": "Machine Type",

@@ -40,10 +40,7 @@ type UserFilters = BaseFilters & {
 type UserRole =
 	| 'admin'
 	| 'manager'
-	| 'operator'
-	| 'quality_inspector'
-	| 'warehouse_staff'
-	| 'scheduler'
+	| 'user'
 	| 'guest'
 
 type UserSessions = {

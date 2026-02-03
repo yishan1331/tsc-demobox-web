@@ -13,7 +13,7 @@
 	},
 	"sidebar": {
 		"monitoring": {
-			"title": "儀表板",
+			"title": "機台監控",
 			"overview": "機台總覽",
 			"machine": "機台即時狀態"
 		},
@@ -29,9 +29,9 @@
 		"overview": "機台總覽",
 		"machine": "機台即時狀態",
 		"history": "歷史資料",
-		"heading": "打頭",
-		"threading": "輾牙",
-		"heat_treatment": "熱處理",
+		"heading": "打頭機",
+		"threading": "輾牙機",
+		"heat_treatment": "熱處理機",
 		"online": "運行中",
 		"offline": "待機中",
 		"total": "總計",
@@ -69,8 +69,11 @@
 		"statusRunning": "運轉",
 		"statusIdle": "待機",
 		"statusError": "異常",
+		"statusOffline": "關機",
+		"statusUnknown": "未知",
 		"statusPaused": "暫停",
-		"statusStopped": "關機",
+		"statusStopped": "停止",
+		"dataTime": "資料時間",
 		"workTimeStatus": "工時狀態",
 		"count": "支數",
 		"sensorLights": "感測器燈號",
@@ -85,7 +88,9 @@
 		"columns": "欄",
 		"columnWidth": "欄位寬度",
 		"setColumnWidth": "設定為",
-		"viewMachine": "查看機台"
+		"viewMachine": "查看機台",
+		"stopAutoRefresh": "停止自動更新",
+		"startAutoRefresh": "啟動自動更新"
 	},
 	"history": {
 		"sensorType": "機台類型",

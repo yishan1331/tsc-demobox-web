@@ -1,5 +1,6 @@
 import { ApiResult } from '@/types'
 import { api } from '@/utils/http-client'
+import { API_SYSTEM } from '@/constants/api.constants'
 
 // ===== 通用 API 回傳格式化函數 =====
 
@@ -28,7 +29,7 @@ export const formatResultDirect = (apiResult: ApiResult): ApiResult => ({
 // ===== 通用資料表 API =====
 
 export const tableQuery = async (tableName: string): Promise<ApiResult> => {
-	const apiResult = await api.get(`tables/${tableName}`)
+	const apiResult = await api.get(`${API_SYSTEM}/1.0/tables/${tableName}`)
 	return formatResult(apiResult)
 }
 
@@ -59,7 +60,7 @@ export const getTableDataWithConditions = async (
 
 	console.log('Final params:', params)
 
-	const apiResult = await api.get(`tables/${tableName}`, { params })
+	const apiResult = await api.get(`${API_SYSTEM}/1.0/tables/${tableName}`, { params })
 	return formatResult(apiResult)
 }
 
@@ -68,6 +69,6 @@ export const patchTableRecord = async (
 	recordId: string | number,
 	data: Record<string, any>
 ): Promise<ApiResult> => {
-	const apiResult = await api.patch(`tables/${tableName}/${recordId}`, data)
+	const apiResult = await api.patch(`${API_SYSTEM}/1.0/tables/${tableName}/${recordId}`, data)
 	return formatResultDirect(apiResult)
 }

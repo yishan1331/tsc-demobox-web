@@ -27,7 +27,7 @@ export const NavigationRoutes = {
 			name: 'monitoring',
 			displayName: 'sidebar.monitoring.title',
 			meta: {
-				icon: 'dvr_fill',
+				icon: 'dashboard',
 			},
 			children: [
 				{
@@ -55,7 +55,7 @@ export const NavigationRoutes = {
 			},
 			children: [
 				{
-					name: 'settingsUsers',
+					name: 'settingsAccounts',
 					displayName: 'sidebar.settings.users',
 				},
 			],

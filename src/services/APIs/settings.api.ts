@@ -1,6 +1,7 @@
 import { type User, ApiResult } from '@/types'
 import { api } from '@/utils/http-client'
 import { formatResult } from './common.api'
+import { API_SYSTEM } from '@/constants/api.constants'
 
 // ===== 帳號管理 API (Users Management) =====
 
@@ -18,12 +19,12 @@ export const getUsersWithPagination = async (conditions?: {
 	const params: any = { ...otherParams, ...filter, ac_type: 'active' }
 
 	console.log('Final params:', params)
-	const apiResult = await api.get('users', { params })
+	const apiResult = await api.get(`${API_SYSTEM}/1.0/users`, { params })
 	return formatResult(apiResult)
 }
 
 export const addUser = async (user: Partial<User>): Promise<ApiResult> => {
-	const apiResult = await api.post('users', user)
+	const apiResult = await api.post(`${API_SYSTEM}/1.0/user`, user)
 	return formatResult(apiResult)
 }
 
@@ -31,11 +32,11 @@ export const updateUser = async (
 	user_id: number,
 	user: Partial<User> & { id: string }
 ): Promise<ApiResult> => {
-	const apiResult = await api.patch(`user/${user_id}`, user)
+	const apiResult = await api.patch(`${API_SYSTEM}/1.0/user/${user_id}`, user)
 	return formatResult(apiResult)
 }
 
 export const removeUser = async (id: number): Promise<ApiResult> => {
-	const apiResult = await api.delete(`users/${id}`)
+	const apiResult = await api.delete(`${API_SYSTEM}/1.0/user/${id}`, {})
 	return formatResult(apiResult)
 }

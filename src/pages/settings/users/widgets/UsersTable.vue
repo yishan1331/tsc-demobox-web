@@ -153,24 +153,6 @@ const columns = defineVaDataTableColumns([
 		sortingOptions: ['desc', 'asc'],
 	},
 	{
-		label: t('user.position'),
-		key: 'position',
-		sortable: true,
-		sortingOptions: ['desc', 'asc'],
-	},
-	{
-		label: t('user.dep_code'),
-		key: 'dep_code',
-		sortable: true,
-		sortingOptions: ['desc', 'asc'],
-	},
-	// {
-	// 	label: t('user.address'),
-	// 	key: 'address',
-	// 	sortable: true,
-	// 	sortingOptions: ['desc', 'asc'],
-	// },
-	{
 		label: t('user.is_active'),
 		key: 'is_active',
 		sortable: true,

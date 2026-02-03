@@ -51,14 +51,22 @@ export const useSensorRealtime = (options: UseSensorRealtimeOptions = {}) => {
 	const currentSensorType = ref<SensorType | null>(null)
 	const currentSensorId = ref<string | null>(null)
 
-	// 輪詢 Timer ID
+	// 輪詢相關狀態
 	let pollingTimer: ReturnType<typeof setInterval> | null = null
+	const isPolling = ref(false)
 
 	// ===== 計算屬性 =====
 
-	/** 機台狀態 */
+	/** 機台狀態 - 直接使用 API 回傳的 machine_status */
 	const machineStatus = computed<MachineStatus>(() => {
-		return realtimeData.value?.machine_status || 'offline'
+		return realtimeData.value?.machine_status || 'unknown'
+	})
+
+	/** 資料時間 (來自 current_data.timestamp) */
+	const dataTimestamp = computed<string>(() => {
+		const timestamp = realtimeData.value?.current_data?.timestamp
+		if (!timestamp) return '-'
+		return SensorService.formatTimestamp(timestamp)
 	})
 
 	/** 機台狀態名稱 */
@@ -183,6 +191,7 @@ export const useSensorRealtime = (options: UseSensorRealtimeOptions = {}) => {
 		pollingTimer = setInterval(() => {
 			fetchRealtimeData()
 		}, pollingInterval)
+		isPolling.value = true
 	}
 
 	/**
@@ -192,6 +201,18 @@ export const useSensorRealtime = (options: UseSensorRealtimeOptions = {}) => {
 		if (pollingTimer) {
 			clearInterval(pollingTimer)
 			pollingTimer = null
+		}
+		isPolling.value = false
+	}
+
+	/**
+	 * 切換自動輪詢狀態
+	 */
+	const togglePolling = () => {
+		if (isPolling.value) {
+			stopPolling()
+		} else {
+			startPolling()
 		}
 	}
 
@@ -245,11 +266,13 @@ export const useSensorRealtime = (options: UseSensorRealtimeOptions = {}) => {
 		errorMessage: readonly(errorMessage),
 		currentSensorType: readonly(currentSensorType),
 		currentSensorId: readonly(currentSensorId),
+		isPolling: readonly(isPolling),
 
 		// 計算屬性
 		machineStatus,
 		machineStatusName,
 		machineStatusColor,
+		dataTimestamp,
 		sensorLights,
 		count,
 		workTimeProgress,
@@ -265,6 +288,7 @@ export const useSensorRealtime = (options: UseSensorRealtimeOptions = {}) => {
 		setSensor,
 		startPolling,
 		stopPolling,
+		togglePolling,
 		refresh,
 		getSensorTypeName,
 	}

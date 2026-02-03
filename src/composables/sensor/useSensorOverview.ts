@@ -38,8 +38,9 @@ export const useSensorOverview = (options: UseSensorOverviewOptions = {}) => {
 	const lastUpdate = ref<Date | null>(null)
 	const errorMessage = ref<string | null>(null)
 
-	// 輪詢 Timer ID
+	// 輪詢相關狀態
 	let pollingTimer: ReturnType<typeof setInterval> | null = null
+	const isPolling = ref(false)
 
 	// ===== 計算屬性 =====
 
@@ -126,6 +127,7 @@ export const useSensorOverview = (options: UseSensorOverviewOptions = {}) => {
 		pollingTimer = setInterval(() => {
 			fetchSensorStatus()
 		}, pollingInterval)
+		isPolling.value = true
 	}
 
 	/**
@@ -135,6 +137,18 @@ export const useSensorOverview = (options: UseSensorOverviewOptions = {}) => {
 		if (pollingTimer) {
 			clearInterval(pollingTimer)
 			pollingTimer = null
+		}
+		isPolling.value = false
+	}
+
+	/**
+	 * 切換自動輪詢狀態
+	 */
+	const togglePolling = () => {
+		if (isPolling.value) {
+			stopPolling()
+		} else {
+			startPolling()
 		}
 	}
 
@@ -167,6 +181,7 @@ export const useSensorOverview = (options: UseSensorOverviewOptions = {}) => {
 		isLoading: readonly(isLoading),
 		lastUpdate: readonly(lastUpdate),
 		errorMessage: readonly(errorMessage),
+		isPolling: readonly(isPolling),
 
 		// 計算屬性
 		stats,
@@ -180,6 +195,7 @@ export const useSensorOverview = (options: UseSensorOverviewOptions = {}) => {
 		getSensorTypeEnglishName,
 		startPolling,
 		stopPolling,
+		togglePolling,
 		refresh,
 	}
 }

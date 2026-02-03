@@ -9,6 +9,7 @@ import axios, {
 } from 'axios'
 import { storeToRefs } from 'pinia'
 import { errorAuthHandling } from '@/utils/common.utils'
+import { API_SYSTEM } from '@/constants/api.constants'
 
 /**
  * Request options with content type support
@@ -249,10 +250,10 @@ const createApiClient = (): AxiosInstance => {
 			if (
 				error.response?.status === 401 &&
 				!originalRequest._retry &&
-				originalRequest.url !== 'auth/login' &&
-				originalRequest.url !== '/auth/token' &&
-				originalRequest.url !== '/auth/logout' &&
-				originalRequest.url !== '/auth/refresh'
+				!originalRequest.url?.includes('auth/login') &&
+				!originalRequest.url?.includes('auth/token') &&
+				!originalRequest.url?.includes('auth/logout') &&
+				!originalRequest.url?.includes('auth/refresh')
 			) {
 				if (isRefreshing) {
 					// If already refreshing, queue this request
@@ -283,7 +284,7 @@ const createApiClient = (): AxiosInstance => {
 				try {
 					// Make refresh token request directly to avoid circular dependency
 					const response = await axios.post(
-						`${BASE_URL}/auth/refresh`,
+						`${BASE_URL}/${API_SYSTEM}/1.0/auth/refresh`,
 						{},
 						{
 							headers: {

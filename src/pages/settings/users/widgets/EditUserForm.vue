@@ -97,10 +97,7 @@ const isEditStatus = ref(false)
 const rolesOptions = ref([
 	{ text: roleLabel.admin, value: 'ADMIN' },
 	{ text: roleLabel.manager, value: 'MANAGER' },
-	{ text: roleLabel.operator, value: 'OPERATOR' },
-	{ text: roleLabel.quality_inspector, value: 'QUALITY_INSPECTOR' },
-	{ text: roleLabel.warehouse_staff, value: 'WAREHOUSE_STAFF' },
-	{ text: roleLabel.scheduler, value: 'SCHEDULER' },
+	{ text: roleLabel.user, value: 'USER' },
 	{ text: roleLabel.guest, value: 'GUEST' },
 ])
 

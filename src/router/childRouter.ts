@@ -80,7 +80,7 @@ export const childRouter: Array<RouteRecordRaw> = [
 					{
 						path: 'users',
 						component: () => import('@/pages/settings/users/UsersPage.vue'),
-						name: 'settingsUsers',
+						name: 'settingsAccounts',
 						meta: {
 							needLogin: true,
 						},

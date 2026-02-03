@@ -30,6 +30,12 @@ import {
 	type WorkTimeStatus,
 	type WorkTimeSegment,
 } from './APIs/sensor.api'
+import { formatDateTime } from '@/utils/timer.utils'
+import {
+	MACHINE_STATUS_NAMES_ZH,
+	getMachineStatusColor as getStatusColor,
+	getWorkTimeStatusColor as getWorkTimeColor,
+} from '@/constants'
 
 export class SensorService {
 	// ===== 機台總覽相關 =====
@@ -102,9 +108,9 @@ export class SensorService {
 	 */
 	static getSensorTypeName(type: SensorType): string {
 		const typeNames: Record<SensorType, string> = {
-			heading: '打頭',
-			threading: '輾牙',
-			heat_treatment: '熱處理',
+			heading: '打頭機',
+			threading: '輾牙機',
+			heat_treatment: '熱處理機',
 		}
 		return typeNames[type] || type
 	}
@@ -138,18 +144,11 @@ export class SensorService {
 
 	/**
 	 * 格式化時間戳
+	 * @returns YYYY-MM-DD HH:mm:ss 格式
 	 */
 	static formatTimestamp(timestamp: string): string {
 		if (!timestamp) return '-'
-		const date = new Date(timestamp)
-		return date.toLocaleString('zh-TW', {
-			year: 'numeric',
-			month: '2-digit',
-			day: '2-digit',
-			hour: '2-digit',
-			minute: '2-digit',
-			second: '2-digit',
-		})
+		return formatDateTime(timestamp)
 	}
 
 	/**
@@ -249,39 +248,21 @@ export class SensorService {
 	 * 取得機台狀態顯示名稱
 	 */
 	static getMachineStatusName(status: MachineStatus): string {
-		const statusNames: Record<MachineStatus, string> = {
-			running: '運轉',
-			idle: '待機',
-			error: '異常',
-			offline: '關機',
-		}
-		return statusNames[status] || status
+		return MACHINE_STATUS_NAMES_ZH[status] || status
 	}
 
 	/**
 	 * 取得機台狀態顏色
 	 */
 	static getMachineStatusColor(status: MachineStatus): string {
-		const statusColors: Record<MachineStatus, string> = {
-			running: '#4CAF50', // 綠色
-			idle: '#9E9E9E', // 灰色
-			error: '#F44336', // 紅色
-			offline: '#616161', // 深灰
-		}
-		return statusColors[status] || '#9E9E9E'
+		return getStatusColor(status)
 	}
 
 	/**
-	 * 取得工時狀態顏色
+	 * 取得工時狀態顏色 (與機台狀態一致)
 	 */
 	static getWorkTimeStatusColor(status: WorkTimeStatus): string {
-		const colors: Record<WorkTimeStatus, string> = {
-			running: '#4CAF50', // 綠色
-			paused: '#FF9800', // 橙色
-			stopped: '#9E9E9E', // 灰色
-			error: '#F44336', // 紅色
-		}
-		return colors[status] || '#9E9E9E'
+		return getWorkTimeColor(status)
 	}
 
 	/**
@@ -337,6 +318,7 @@ export class SensorService {
 	/**
 	 * 計算工時進度條位置 (08:00 ~ 隔天08:00, 共24小時)
 	 * 使用時間戳差值計算，避免跨日計算問題
+	 * 當沒有資料時，用「未知」狀態填滿從 08:00 到現在的時間
 	 */
 	static calculateWorkTimeProgress(segments: WorkTimeSegment[]): Array<{
 		start: number // 百分比
@@ -344,15 +326,43 @@ export class SensorService {
 		status: WorkTimeStatus
 		color: string
 	}> {
-		if (segments.length === 0) return []
+		const TOTAL_MS = 24 * 60 * 60 * 1000 // 24小時的毫秒數
+
+		// 當沒有資料時，用「未知」狀態填滿從 08:00 到現在
+		if (segments.length === 0) {
+			const now = new Date()
+			const workDayStart = new Date()
+
+			// 計算今天的工作日開始時間 (08:00)
+			workDayStart.setHours(8, 0, 0, 0)
+
+			// 如果現在還沒到 08:00，則使用昨天的 08:00 作為開始
+			if (now < workDayStart) {
+				workDayStart.setDate(workDayStart.getDate() - 1)
+			}
+
+			const workDayStartTime = workDayStart.getTime()
+			const nowTime = now.getTime()
+
+			// 計算從 08:00 到現在的百分比
+			const relativeNowMs = nowTime - workDayStartTime
+			const widthPercent = (relativeNowMs / TOTAL_MS) * 100
+
+			return [
+				{
+					start: 0,
+					width: Math.max(0, Math.min(100, widthPercent)),
+					status: 'unknown' as WorkTimeStatus,
+					color: this.getWorkTimeStatusColor('unknown'),
+				},
+			]
+		}
 
 		// 計算工作日開始時間（第一個 segment 的開始時間應該是 08:00）
 		const firstSegment = segments[0]
 		const workDayStart = new Date(firstSegment.start_time)
 		workDayStart.setHours(8, 0, 0, 0)
 		const workDayStartTime = workDayStart.getTime()
-
-		const TOTAL_MS = 24 * 60 * 60 * 1000 // 24小時的毫秒數
 
 		return segments.map((segment) => {
 			const startTime = new Date(segment.start_time).getTime()

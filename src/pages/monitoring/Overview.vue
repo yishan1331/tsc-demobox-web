@@ -1,10 +1,29 @@
 <template>
 	<div class="sensor-overview">
-		<!-- 頂部更新時間 -->
-		<div class="flex justify-end items-center mb-4">
-			<span class="text-sm text-gray-600">
-				{{ t('sensor.lastUpdate') }}： {{ formattedLastUpdate }}
-			</span>
+		<!-- 頂部狀態圖例與更新時間 -->
+		<div class="header-bar">
+			<!-- 狀態圖例（使用統一常數） -->
+			<div class="status-legend">
+				<div v-for="item in statusLegend" :key="item.key" class="legend-item">
+					<span class="legend-dot" :style="{ backgroundColor: item.color }" />
+					<span class="legend-text">{{ item.label }}</span>
+				</div>
+			</div>
+
+			<!-- 更新時間 -->
+			<div class="update-time-container">
+				<span class="text-sm text-gray-600">
+					{{ t('sensor.lastUpdate') }}： {{ formattedLastUpdate }}
+				</span>
+				<button
+					class="polling-toggle"
+					:class="{ 'is-polling': isPolling }"
+					:title="isPolling ? t('machine.stopAutoRefresh') : t('machine.startAutoRefresh')"
+					@click="togglePolling"
+				>
+					<VaIcon :name="isPolling ? 'sync' : 'sync_disabled'" size="18px" />
+				</button>
+			</div>
 		</div>
 
 		<!-- Loading 狀態 -->
@@ -46,10 +65,10 @@
 							v-for="sensor in getSensorsByType(sensorType)"
 							:key="sensor.sensor_id"
 							class="machine-card"
-							:class="{ 'is-online': sensor.is_online, 'is-offline': !sensor.is_online }"
+							:style="getMachineCardStyle(sensor.machine_status)"
 							role="button"
 							tabindex="0"
-							:aria-label="`${formatMachineName(sensor).replace('\n', ' ')} - ${sensor.is_online ? t('sensor.online') : t('sensor.offline')}`"
+							:aria-label="`${formatMachineName(sensor).replace('\n', ' ')} - ${getStatusLabel(sensor.machine_status)}`"
 							@click="handleSensorClick(sensor)"
 							@keydown.enter="handleSensorClick(sensor)"
 							@keydown.space.prevent="handleSensorClick(sensor)"
@@ -66,10 +85,12 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { useSensorOverview } from '@/composables/sensor/useSensorOverview'
-import type { SensorStatus } from '@/services/SensorService'
+import type { SensorStatus, MachineStatus } from '@/services/SensorService'
+import { MACHINE_STATUS_LIST, MACHINE_STATUS_COLORS } from '@/constants'
 
 const { t } = useI18n()
 const router = useRouter()
@@ -80,10 +101,50 @@ const {
 	errorMessage,
 	sensorTypes,
 	formattedLastUpdate,
+	isPolling,
 	getSensorsByType,
 	getSensorTypeName,
+	togglePolling,
 	refresh,
 } = useSensorOverview()
+
+// 狀態圖例（使用統一常數）
+const statusLegend = computed(() =>
+	MACHINE_STATUS_LIST.map((item) => ({
+		key: item.key,
+		label: t(`machine.status${item.key.charAt(0).toUpperCase() + item.key.slice(1)}`),
+		color: item.color,
+	}))
+)
+
+/**
+ * 取得機台卡片樣式（根據 machine_status）
+ */
+const getMachineCardStyle = (status: MachineStatus) => {
+	const color = MACHINE_STATUS_COLORS[status] || MACHINE_STATUS_COLORS.unknown
+	return {
+		backgroundColor: color,
+		borderColor: adjustColor(color, -20),
+	}
+}
+
+/**
+ * 調整顏色亮度
+ */
+const adjustColor = (hex: string, percent: number): string => {
+	const num = parseInt(hex.replace('#', ''), 16)
+	const r = Math.min(255, Math.max(0, (num >> 16) + percent))
+	const g = Math.min(255, Math.max(0, ((num >> 8) & 0x00ff) + percent))
+	const b = Math.min(255, Math.max(0, (num & 0x0000ff) + percent))
+	return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, '0')}`
+}
+
+/**
+ * 取得狀態標籤文字
+ */
+const getStatusLabel = (status: MachineStatus): string => {
+	return t(`machine.status${status.charAt(0).toUpperCase() + status.slice(1)}`)
+}
 
 /**
  * 格式化機台名稱顯示
@@ -125,9 +186,87 @@ const handleSensorClick = (sensor: SensorStatus) => {
 	padding: 0.5rem;
 }
 
-// ===== 更新時間文字 =====
+// ===== 頂部狀態欄 =====
+.header-bar {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 1rem;
+	flex-wrap: wrap;
+	gap: 1rem;
+}
+
+// ===== 狀態圖例 =====
+.status-legend {
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+	flex-wrap: wrap;
+}
+
+.legend-item {
+	display: flex;
+	align-items: center;
+	gap: 0.375rem;
+}
+
+.legend-dot {
+	width: 14px;
+	height: 14px;
+	border-radius: 3px;
+	flex-shrink: 0;
+}
+
+.legend-text {
+	font-size: 0.75rem;
+	color: $text-secondary;
+}
+
+// ===== 更新時間區域 =====
+.update-time-container {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+
 .text-gray-600 {
 	color: $text-secondary;
+}
+
+.polling-toggle {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 28px;
+	height: 28px;
+	border: none;
+	border-radius: 50%;
+	background: transparent;
+	color: $text-secondary;
+	cursor: pointer;
+	transition: all 0.2s;
+
+	&:hover {
+		background: rgba($tsc-blue, 0.1);
+		color: $tsc-blue;
+	}
+
+	&.is-polling {
+		color: $tsc-blue;
+
+		:deep(.va-icon) {
+			animation: spin 2s linear infinite;
+		}
+	}
+}
+
+@keyframes spin {
+	from {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(360deg);
+	}
 }
 
 // ===== 三欄並排容器 =====
@@ -220,17 +359,17 @@ const handleSensorClick = (sensor: SensorStatus) => {
 		}
 	}
 
-	// 離線狀態 - 灰色
+	// 離線狀態 - 深灰色（關機）
 	&.is-offline {
-		background: $machine-idle;
-		border-color: darken($machine-idle, 10%);
+		background: #616161;
+		border-color: #4a4a4a;
 
 		.machine-label {
 			color: #ffffff;
 		}
 
 		&:hover {
-			background: darken($machine-idle, 5%);
+			background: #525252;
 		}
 	}
 
@@ -256,6 +395,23 @@ body.va-dark {
 	.sensor-overview {
 		.text-gray-600 {
 			color: #94a3b8 !important;
+		}
+
+		.legend-text {
+			color: #94a3b8 !important;
+		}
+
+		.polling-toggle {
+			color: #64748b !important;
+
+			&:hover {
+				background: rgba(56, 189, 248, 0.15) !important;
+				color: #38bdf8 !important;
+			}
+
+			&.is-polling {
+				color: #38bdf8 !important;
+			}
 		}
 	}
 
@@ -292,8 +448,8 @@ body.va-dark {
 		}
 
 		&.is-offline {
-			background: #64748b !important;
-			border-color: #475569 !important;
+			background: #616161 !important;
+			border-color: #4a4a4a !important;
 
 			&:hover {
 				background: #475569 !important;

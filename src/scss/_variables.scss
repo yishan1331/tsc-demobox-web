@@ -42,7 +42,9 @@ $tsc-grey-dark: #334155 !default;      // 深灰 - 暗色模式邊框
 // 機台狀態色彩 (MACHINE STATUS COLORS) - 科技風
 // ----------------------------------------------------------------------------
 $machine-running: #22c55e !default;    // 運行中 - 科技綠
-$machine-idle: #94a3b8 !default;       // 待機 - 淺灰
+$machine-idle: #ffc107 !default;       // 待機 - 黃色
+$machine-offline: #616161 !default;    // 關機 - 深灰色
+$machine-unknown: #9c27b0 !default;    // 未知 - 紫色
 $machine-warning: #f59e0b !default;    // 警告 - 琥珀色
 $machine-error: #ef4444 !default;      // 異常 - 紅色
 

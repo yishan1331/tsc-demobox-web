@@ -1119,7 +1119,7 @@ interface SensorHistoryResponse {
 
 ### D. 系統設定 [settings]
 
-#### D-1. 帳號管理 [settingsUsers] ✅ 已完成
+#### D-1. 帳號管理 [settingsAccounts] ✅ 已完成
 
 > **路由**: `/settings/users`
 > **檔案**: `src/pages/settings/users/UsersPage.vue`

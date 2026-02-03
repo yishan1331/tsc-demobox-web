@@ -3,9 +3,6 @@
 		<!-- 頂部導航 -->
 		<div class="header-section">
 			<div class="flex items-center gap-4">
-				<VaButton preset="plain" icon="arrow_back" @click="goBack">
-					{{ t('common.back') }}
-				</VaButton>
 				<h1 class="page-title">{{ t('sensor.machine') }}</h1>
 			</div>
 			<div class="header-actions">
@@ -18,9 +15,19 @@
 				>
 					{{ isEditMode ? t('machine.doneEditing') : t('machine.customizeLayout') }}
 				</VaButton>
-				<span v-if="realtimeData" class="update-time">
-					{{ t('sensor.lastUpdate') }}： {{ formattedLastUpdate }}
-				</span>
+				<div v-if="realtimeData" class="update-time-container">
+					<span class="update-time">
+						{{ t('sensor.lastUpdate') }}： {{ formattedLastUpdate }}
+					</span>
+					<button
+						class="polling-toggle"
+						:class="{ 'is-polling': isPolling }"
+						:title="isPolling ? t('machine.stopAutoRefresh') : t('machine.startAutoRefresh')"
+						@click="togglePolling"
+					>
+						<VaIcon :name="isPolling ? 'sync' : 'sync_disabled'" size="18px" />
+					</button>
+				</div>
 			</div>
 		</div>
 
@@ -172,6 +179,10 @@
 											</span>
 										</div>
 									</div>
+									<div class="info-row">
+										<span class="info-label">{{ t('machine.dataTime') }}：</span>
+										<span class="info-value">{{ dataTimestamp }}</span>
+									</div>
 								</div>
 							</div>
 						</VaCardContent>
@@ -207,21 +218,9 @@
 								</div>
 							</div>
 							<div class="worktime-legend">
-								<div class="legend-item">
-									<span class="legend-color" style="background-color: #4caf50" />
-									<span>{{ t('machine.statusRunning') }}</span>
-								</div>
-								<div class="legend-item">
-									<span class="legend-color" style="background-color: #ff9800" />
-									<span>{{ t('machine.statusPaused') }}</span>
-								</div>
-								<div class="legend-item">
-									<span class="legend-color" style="background-color: #9e9e9e" />
-									<span>{{ t('machine.statusStopped') }}</span>
-								</div>
-								<div class="legend-item">
-									<span class="legend-color" style="background-color: #f44336" />
-									<span>{{ t('machine.statusError') }}</span>
+								<div v-for="item in machineStatuses" :key="item.key" class="legend-item">
+									<span class="legend-color" :style="{ backgroundColor: item.color }" />
+									<span>{{ item.label }}</span>
 								</div>
 							</div>
 						</VaCardContent>
@@ -327,16 +326,15 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useRouter } from 'vue-router'
 import { VueDraggable } from 'vue-draggable-plus'
 import { useSensorRealtime } from '@/composables/sensor/useSensorRealtime'
 import { useDashboardLayout, type ColSpan } from '@/composables/sensor/useDashboardLayout'
 import { SensorService, type SensorType, type WorkTimeStatus } from '@/services/SensorService'
+import { MACHINE_STATUS_LIST } from '@/constants'
 import QueryCard from '@/components/common/QueryCard.vue'
 import FormGroup from '@/components/common/FormGroup.vue'
 
 const { t } = useI18n()
-const router = useRouter()
 
 const {
 	realtimeData,
@@ -345,6 +343,7 @@ const {
 	currentSensorType,
 	currentSensorId,
 	machineStatus,
+	dataTimestamp,
 	sensorLights,
 	count,
 	workTimeProgress,
@@ -353,8 +352,10 @@ const {
 	formattedLastUpdate,
 	heatTreatmentData,
 	threadingData,
+	isPolling,
 	refresh,
 	setSensor,
+	togglePolling,
 } = useSensorRealtime({ pollingInterval: 5000 })
 
 // ===== 感測器選擇相關狀態 =====
@@ -451,17 +452,14 @@ const onDragChange = () => {
 	// 拖放後自動保存（由 composable 的 watch 處理）
 }
 
-// 機台狀態列表
-const machineStatuses = computed(() => [
-	{ key: 'running', label: t('machine.statusRunning'), color: '#4CAF50' },
-	{ key: 'idle', label: t('machine.statusIdle'), color: '#9E9E9E' },
-	{ key: 'error', label: t('machine.statusError'), color: '#F44336' },
-])
-
-// 返回上一頁
-const goBack = () => {
-	router.push({ name: 'monitoringOverview' })
-}
+// 機台狀態列表（使用統一常數）
+const machineStatuses = computed(() =>
+	MACHINE_STATUS_LIST.map((item) => ({
+		key: item.key,
+		label: t(`machine.status${item.key.charAt(0).toUpperCase() + item.key.slice(1)}`),
+		color: item.color,
+	}))
+)
 
 // 取得機台圖示
 const getMachineIcon = () => {
@@ -478,13 +476,14 @@ const formatCount = (num: number): string => {
 	return num.toString().padStart(6, '0')
 }
 
-// 取得工時狀態名稱
+// 取得工時狀態名稱 (與機台狀態一致)
 const getWorkTimeStatusName = (status: WorkTimeStatus): string => {
 	const names: Record<WorkTimeStatus, string> = {
 		running: t('machine.statusRunning'),
-		paused: t('machine.statusPaused'),
-		stopped: t('machine.statusStopped'),
+		idle: t('machine.statusIdle'),
 		error: t('machine.statusError'),
+		offline: t('machine.statusOffline'),
+		unknown: t('machine.statusUnknown'),
 	}
 	return names[status] || status
 }
@@ -518,9 +517,51 @@ const getWorkTimeStatusName = (status: WorkTimeStatus): string => {
 	color: $text-primary;
 }
 
+.update-time-container {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+
 .update-time {
 	font-size: 0.875rem;
 	color: $text-secondary;
+}
+
+.polling-toggle {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 28px;
+	height: 28px;
+	border: none;
+	border-radius: 50%;
+	background: transparent;
+	color: $text-secondary;
+	cursor: pointer;
+	transition: all 0.2s;
+
+	&:hover {
+		background: rgba($tsc-blue, 0.1);
+		color: $tsc-blue;
+	}
+
+	&.is-polling {
+		color: $tsc-blue;
+
+		:deep(.va-icon) {
+			animation: spin 2s linear infinite;
+		}
+	}
+}
+
+@keyframes spin {
+	from {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(360deg);
+	}
 }
 
 // 編輯模式提示
@@ -1073,6 +1114,20 @@ body.va-dark .machine-detail,
 		color: #94a3b8 !important;
 	}
 
+	// 輪詢切換按鈕
+	.polling-toggle {
+		color: #64748b !important;
+
+		&:hover {
+			background: rgba(56, 189, 248, 0.15) !important;
+			color: #38bdf8 !important;
+		}
+
+		&.is-polling {
+			color: #38bdf8 !important;
+		}
+	}
+
 	// 編輯模式提示
 	.edit-mode-hint {
 		background: rgba(56, 189, 248, 0.15) !important;
@@ -1138,13 +1193,13 @@ body.va-dark .machine-detail,
 		color: #f8fafc !important;
 	}
 
-	.status-badge {
+	.status-badge:not(.active) {
 		background: #334155 !important;
 		color: #94a3b8 !important;
+	}
 
-		&.active {
-			color: #ffffff !important;
-		}
+	.status-badge.active {
+		color: #ffffff !important;
 	}
 
 	// 工時進度條

@@ -56,7 +56,7 @@ export default [
 						settings: {
 							authority: true,
 							children: {
-								settingsUsers: {
+								settingsAccounts: {
 									authority: true,
 									function: {
 										delete: true,

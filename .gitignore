@@ -46,10 +46,10 @@ coverage
 .temp
 .tmp
 
-# 開發用模擬數據
-src/mock/*
-!src/mock/mock.example.ts
-!src/mock/setupMock.ts
+# 開發用模擬數據（暫時追蹤用於 demo）
+# src/mock/*
+# !src/mock/mock.example.ts
+# !src/mock/setupMock.ts
 
 # 其他
 .DS_Store

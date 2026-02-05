@@ -11,12 +11,12 @@ export function setupMock() {
 
 		// Import all mock modules dynamically
 		Promise.all([
-			import('./auth'),
-			import('./monitoring'),
-			import('./settings'),
-			import('./common'),
+			import('@/mock/auth'),
+			import('@/mock/monitoring'),
+			import('@/mock/settings'),
+			import('@/mock/common'),
 			// RESTful API mock examples (for apiClient format)
-			import('./users-restful'),
+			import('@/mock/users-restful'),
 		]).then((modules) => {
 			// Register all mock APIs
 			modules.forEach((module) => {

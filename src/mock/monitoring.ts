@@ -369,7 +369,8 @@ export default [
 	{
 		url: /\/mock\/api\/TSC\/1\.0\/sensors\/(heading|threading|heat_treatment)\/[\w_]+\/history/,
 		method: 'get',
-		response: ({ url, query }: { url: string; query: Record<string, string> }) => {
+		response: (options: { url: string; query?: Record<string, string> }) => {
+			const url = options.url
 			const match = url.match(
 				/\/mock\/api\/TSC\/1\.0\/sensors\/(heading|threading|heat_treatment)\/([\w_]+)\/history/
 			)
@@ -398,9 +399,11 @@ export default [
 				sensorName = `${typeNames[sensorType]} ${num}`
 			}
 
-			// 處理分頁參數
-			const page = parseInt(query.page) || 1
-			const limit = parseInt(query.limit) || 20
+			// 處理分頁參數 - 兼容 vite-plugin-mock 和 Mock.js
+			const urlParams = new URLSearchParams(url.split('?')[1] || '')
+			const query = options.query || {}
+			const page = parseInt(query.page || urlParams.get('page') || '1')
+			const limit = parseInt(query.limit || urlParams.get('limit') || '20')
 			const totalRecords = 500 // 假設有 500 筆歷史數據
 
 			// 產生歷史數據

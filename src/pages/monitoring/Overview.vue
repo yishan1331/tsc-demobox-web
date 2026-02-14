@@ -106,7 +106,7 @@ const {
 	getSensorTypeName,
 	togglePolling,
 	refresh,
-} = useSensorOverview()
+} = useSensorOverview({pollingInterval: 5000})
 
 // 狀態圖例（使用統一常數）
 const statusLegend = computed(() =>

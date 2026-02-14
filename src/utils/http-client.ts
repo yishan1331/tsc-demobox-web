@@ -48,10 +48,10 @@ const getBaseUrl = (): string => {
 	} else if (apiSource === 'api') {
 		// Use configured API base URL with automatic protocol detection
 		const configuredUrl =
-			`${currentDomain}${import.meta.env.VITE_API_BASE_URL}` || 'localhost:3000'
+			`${import.meta.env.VITE_API_IP === '' ? currentDomain : import.meta.env.VITE_API_IP}${import.meta.env.VITE_API_BASE_URL}` || 'localhost:3000'
 
 		// Add current protocol to configured URL
-		const apiUrl = `${currentProtocol}//${configuredUrl}`
+		const apiUrl = `${import.meta.env.VITE_API_IP === '' ? currentProtocol : 'https:'}//${configuredUrl}`
 		console.log(apiUrl)
 		return apiUrl
 	}

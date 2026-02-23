@@ -11,7 +11,7 @@ export default [
 			return Mock.mock({
 				Data: {
 					fullname: '\u7ba1\u7406\u8005',
-					login_time: '@datetime("yyyy-MM-dd HH:mm:ss")',
+					login_time: new Date().toISOString().replace('T', ' ').substring(0, 19),
 					permissions: {
 						// DemoBox - 機台監控
 						monitoring: {
